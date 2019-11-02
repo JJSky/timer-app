@@ -1,0 +1,28 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="secondary">
+            <ion-buttons slot="start">
+                <ion-back-button defaultHref="timer/home" text="Cancel"></ion-back-button>
+            </ion-buttons>
+        </ion-buttons>
+        <ion-title>
+            New Timer
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <form [formGroup]="timerForm" (ngSubmit)="createTimer(timerForm)">
+        <ion-item>
+            <ion-label position="floating">Timer Name</ion-label>
+            <ion-input formControlName="name"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="timerForm.controls.name"></ion-item>
+        <ion-item button="true" detail="false" (click)="chooseTime()">
+            <div class="time">
+                <span class="minute">{{ minutes | async | number: '2.0-0' }}m</span>
+                <span class="second"> {{ seconds | async | number: '2.0-0' }}s</span>
+            </div>
+        </ion-item>
+        <ion-button type="submit" expand="block">Create</ion-button>
+    </form>
+</ion-content>
