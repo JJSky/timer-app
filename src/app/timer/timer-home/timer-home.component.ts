@@ -8,7 +8,7 @@ import { ModalService } from 'src/app/core/services/modal.service';
 })
 export class TimerHomeComponent implements OnInit {
     public slideOpts: any = {
-        initialSlide: 1,
+        initialSlide: 0,
         speed: 400
     };
 
