@@ -1,34 +1,30 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
-import { TimerHomeComponent } from './timer-home/timer-home.component';
-import { TimerCreateComponent } from './timer-create/timer-create.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { IonicModule } from "@ionic/angular";
+import { RouterModule } from "@angular/router";
+import { ReactiveFormsModule } from "@angular/forms";
+import { SharedModule } from "../shared/shared.module";
+import { TimerHomeComponent } from "./pages";
+import { TimerCountdownComponent } from "./components";
 
 @NgModule({
-    declarations: [TimerHomeComponent, TimerCreateComponent],
+    declarations: [TimerHomeComponent, TimerCountdownComponent],
     imports: [
         CommonModule,
         IonicModule,
         ReactiveFormsModule,
+        SharedModule,
         RouterModule.forChild([
             {
-                path: 'home',
+                path: "home",
                 component: TimerHomeComponent
             },
             {
-                path: 'create',
-                component: TimerCreateComponent
-            },
-            {
-                path: '',
-                pathMatch: 'full',
-                redirectTo: '/timer/home'
+                path: "**",
+                pathMatch: "full",
+                redirectTo: "/timer/home"
             }
         ])
-    ],
-    exports: [TimerCreateComponent],
-    entryComponents: [TimerCreateComponent]
+    ]
 })
 export class TimerModule {}

@@ -1,0 +1,31 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <!-- <ion-buttons slot="secondary">
+            <ion-button>
+                <ion-icon slot="icon-only" name="contact"></ion-icon>
+            </ion-button>
+        </ion-buttons> -->
+        <ion-title>
+            Jadryan's Timers
+        </ion-title>
+        <ion-buttons slot="primary">
+            <ion-button (click)="createTimer()">
+                <ion-icon slot="icon-only" name="add"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-slides pager="true" [options]="slideOpts">
+        <ion-slide>
+            <app-timer-countdown></app-timer-countdown>
+        </ion-slide>
+        <ion-slide>
+            <h1>Slide 2</h1>
+        </ion-slide>
+        <ion-slide>
+            <h1>Slide 3</h1>
+        </ion-slide>
+    </ion-slides>
+</ion-content>

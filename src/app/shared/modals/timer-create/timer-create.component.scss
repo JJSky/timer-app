@@ -1,0 +1,19 @@
+:host {
+    ion-item {
+        --padding-end: 16px;
+        margin-top: 5px;
+
+        .time {
+            margin: auto;
+            font-size: 48px;
+        }
+    }
+    .errors {
+        color: var(--ion-color-danger);
+        font-weight: bold;
+        padding: 16px;
+    }
+    ion-button[type="submit"] {
+        margin: 16px;
+    }
+}

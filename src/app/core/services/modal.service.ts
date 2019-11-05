@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { TimerCreateComponent } from '../../timer/timer-create/timer-create.component';
+import { Injectable } from "@angular/core";
+import { ModalController } from "@ionic/angular";
+import { TimerCreateComponent } from "../../shared/modals/timer-create/timer-create.component";
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: "root"
 })
 export class ModalService {
     constructor(private _modalCtrl: ModalController) {}
