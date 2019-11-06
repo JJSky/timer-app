@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-timer-countdown',
-  templateUrl: './timer-countdown.component.html',
-  styleUrls: ['./timer-countdown.component.scss'],
+    selector: 'app-timer-countdown',
+    templateUrl: './timer-countdown.component.html',
+    styleUrls: ['./timer-countdown.component.scss']
 })
 export class TimerCountdownComponent implements OnInit {
+    constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {}
-
+    ngOnInit(): void {}
 }

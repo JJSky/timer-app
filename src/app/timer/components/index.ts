@@ -1,3 +1,3 @@
 export {
     TimerCountdownComponent
-} from "./timer-countdown/timer-countdown.component";
+} from './timer-countdown/timer-countdown.component';

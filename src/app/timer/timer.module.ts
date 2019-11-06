@@ -1,11 +1,13 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { IonicModule } from "@ionic/angular";
-import { RouterModule } from "@angular/router";
-import { ReactiveFormsModule } from "@angular/forms";
-import { SharedModule } from "../shared/shared.module";
-import { TimerHomeComponent } from "./pages";
-import { TimerCountdownComponent } from "./components";
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
+import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
+import { CountdownModule } from 'ngx-countdown';
+
+import { TimerHomeComponent } from './pages';
+import { TimerCountdownComponent } from './components';
 
 @NgModule({
     declarations: [TimerHomeComponent, TimerCountdownComponent],
@@ -14,15 +16,16 @@ import { TimerCountdownComponent } from "./components";
         IonicModule,
         ReactiveFormsModule,
         SharedModule,
+        CountdownModule,
         RouterModule.forChild([
             {
-                path: "home",
+                path: '',
                 component: TimerHomeComponent
             },
             {
-                path: "**",
-                pathMatch: "full",
-                redirectTo: "/timer/home"
+                path: '**',
+                pathMatch: 'full',
+                redirectTo: '/timer'
             }
         ])
     ]
