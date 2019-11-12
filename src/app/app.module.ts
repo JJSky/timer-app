@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
+import { NgxsModule } from '@ngxs/store';
+import { NgxsEmitPluginModule } from '@ngxs-labs/emitter';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -10,6 +12,7 @@ import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { CountdownModule } from 'ngx-countdown';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 
 @NgModule({
     declarations: [AppComponent],
@@ -19,6 +22,9 @@ import { CountdownModule } from 'ngx-countdown';
         CoreModule,
         SharedModule,
         CountdownModule,
+        NgxsModule,
+        NgxsEmitPluginModule,
+        NgxsReduxDevtoolsPluginModule,
         IonicModule.forRoot(),
         RouterModule.forRoot([
             {

@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { StorageService } from './core/services';
 
 @Component({
     selector: 'app-root',
@@ -11,17 +12,21 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 })
 export class AppComponent {
     constructor(
-        private platform: Platform,
-        private splashScreen: SplashScreen,
-        private statusBar: StatusBar
+        private _platform: Platform,
+        private _splashScreen: SplashScreen,
+        private _statusBar: StatusBar,
+        private _storageService: StorageService
     ) {
         this.initializeApp();
     }
 
     initializeApp(): void {
-        this.platform.ready().then(() => {
-            this.statusBar.styleDefault();
-            this.splashScreen.hide();
+        this._platform.ready().then(() => {
+            this._statusBar.styleDefault();
+            this._splashScreen.hide();
         });
+
+        // Restore timers
+        this._storageService.restoreTimers();
     }
 }

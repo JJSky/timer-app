@@ -1,1 +1,1 @@
-export { CountdownTimer } from './timer/countdown-timer.model';
+export { TimerDto } from './timer/timer-dto.model';

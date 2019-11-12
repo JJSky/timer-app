@@ -9,23 +9,23 @@
             Jadryan's Timers
         </ion-title>
         <ion-buttons slot="primary">
-            <ion-button (click)="createTimer()">
+            <ion-button (click)="createTimer()" title="Add new timer">
                 <ion-icon slot="icon-only" name="add"></ion-icon>
+                <ion-ripple-effect></ion-ripple-effect>
             </ion-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <ion-slides pager="true" [options]="slideOpts">
-        <ion-slide>
-            <app-timer-countdown></app-timer-countdown>
-        </ion-slide>
-        <ion-slide>
-            <h1>Slide 2</h1>
-        </ion-slide>
-        <ion-slide>
-            <h1>Slide 3</h1>
+    <ion-slides
+        pager="true"
+        [options]="slideOpts"
+        *ngIf="(timers$ | async)?.length > 0; else noTimers"
+    >
+        <ion-slide *ngFor="let timer of timers$ | async">
+            <app-timer-countdown [timer]="timer"></app-timer-countdown>
         </ion-slide>
     </ion-slides>
+    <ng-template #noTimers>No timers</ng-template>
 </ion-content>

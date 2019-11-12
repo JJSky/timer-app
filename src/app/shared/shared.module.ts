@@ -4,11 +4,12 @@ import { IonicModule } from '@ionic/angular';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { TimerCreateComponent } from './modals';
-import { CountdownTimer } from './models';
+import { TimerDto } from './models';
 
 @NgModule({
     declarations: [TimerCreateComponent],
     imports: [CommonModule, IonicModule, ReactiveFormsModule],
-    entryComponents: [TimerCreateComponent]
+    entryComponents: [TimerCreateComponent],
+    providers: [TimerDto]
 })
 export class SharedModule {}

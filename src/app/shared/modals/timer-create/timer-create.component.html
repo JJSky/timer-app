@@ -4,7 +4,7 @@
             <ion-buttons slot="start">
                 <ion-button (click)="dismiss()">
                     Cancel
-                    <ion-icon slot="icon-only" name="close"></ion-icon>
+                    <ion-ripple-effect></ion-ripple-effect>
                 </ion-button>
             </ion-buttons>
         </ion-buttons>
@@ -16,7 +16,7 @@
 <ion-content>
     <form [formGroup]="timerForm" (ngSubmit)="createTimer(timerForm)">
         <ion-item>
-            <ion-label position="Fixed">Timer Name</ion-label>
+            <ion-label position="Fixed">Name</ion-label>
             <ion-input
                 class="ion-text-right"
                 placeholder="Timer#9320"
@@ -24,12 +24,13 @@
             ></ion-input>
         </ion-item>
         <ion-item button="true" detail="false" (click)="chooseTime()">
+            <ion-label position="Fixed">Time</ion-label>
             <div class="time">
                 <span class="minute"
-                    >{{ minutes | async | number: "2.0-0" }}m</span
+                    >{{ minutes | async | number: '2.0-0' }}m</span
                 >
                 <span class="second">
-                    {{ seconds | async | number: "2.0-0" }}s</span
+                    {{ seconds | async | number: '2.0-0' }}s</span
                 >
             </div>
         </ion-item>

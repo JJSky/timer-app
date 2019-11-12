@@ -3,17 +3,18 @@
         --padding-end: 16px;
         margin-top: 5px;
 
-        .time {
-            margin: auto;
-            font-size: 48px;
+        // .time { }
+        ion-input {
+            --padding-end: 0;
         }
     }
     .errors {
         color: var(--ion-color-danger);
         font-weight: bold;
         padding: 16px;
+        text-align: center;
     }
-    ion-button[type="submit"] {
+    ion-button[type='submit'] {
         margin: 16px;
     }
 }

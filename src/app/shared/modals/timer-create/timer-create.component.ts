@@ -1,13 +1,15 @@
-import { Component, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { PickerOptions, PickerColumnOption } from "@ionic/core";
-import { PickerController, ModalController } from "@ionic/angular";
-import { BehaviorSubject } from "rxjs";
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { PickerOptions, PickerColumnOption } from '@ionic/core';
+import { PickerController, ModalController } from '@ionic/angular';
+import { BehaviorSubject } from 'rxjs';
+import { CountdownTimer } from 'ngx-countdown';
+import { TimerDto } from '../../models';
 
 @Component({
-    selector: "app-timer-create",
-    templateUrl: "./timer-create.component.html",
-    styleUrls: ["./timer-create.component.scss"]
+    selector: 'app-timer-create',
+    templateUrl: './timer-create.component.html',
+    styleUrls: ['./timer-create.component.scss']
 })
 export class TimerCreateComponent implements OnInit {
     public timerForm: FormGroup;
@@ -17,7 +19,7 @@ export class TimerCreateComponent implements OnInit {
         []
     );
     public generatedName: string =
-        "Timer#" + Math.floor(1000 + Math.random() * 9000);
+        'Timer#' + Math.floor(1000 + Math.random() * 9000);
 
     constructor(
         private _fb: FormBuilder,
@@ -29,7 +31,7 @@ export class TimerCreateComponent implements OnInit {
         const maxMinutes = 59;
         const maxSeconds = 59;
         this.timerForm = this._fb.group({
-            name: [""],
+            name: [''],
             minutes: [0, [Validators.min(0), Validators.max(maxMinutes)]],
             seconds: [0, [Validators.min(0), Validators.max(maxSeconds)]]
         });
@@ -40,17 +42,17 @@ export class TimerCreateComponent implements OnInit {
         value
     }: {
         valid: any;
-        value: { name: string; minutes: number; seconds: number };
+        value: TimerDto;
     }): Promise<void> {
         const errArray = [];
-        console.log(value);
+
         // Validate minutes and seconds
         if (value.minutes <= 0 && value.seconds <= 0) {
-            errArray.push("Timer cannot have no time");
+            errArray.push('Timer cannot have no time');
         }
         this.errors.next(errArray);
         if (errArray.length) {
-            console.log("there are errors, stop submission", errArray);
+            console.log('there are errors, stop submission', errArray);
             return;
         }
 
@@ -60,7 +62,13 @@ export class TimerCreateComponent implements OnInit {
             value.name = this.generatedName;
         }
 
-        console.log(value, this.minutes.value, this.seconds.value);
+        // Calculate number of miliseconds in timer
+        const milisecondsInMinute = 60000;
+        const milisecondsInSecond = 1000;
+        value.totalTime =
+            this.minutes.value * milisecondsInMinute +
+            this.seconds.value * milisecondsInSecond;
+
         this.dismiss(value);
     }
 
@@ -75,14 +83,14 @@ export class TimerCreateComponent implements OnInit {
         const minutesOptions: Array<PickerColumnOption> = [];
         const secondsOptions: Array<PickerColumnOption> = [];
         for (let i = 0; i < minutesInHour; i++) {
-            const formattedIndex = i.toLocaleString("en-us", {
+            const formattedIndex = i.toLocaleString('en-us', {
                 minimumIntegerDigits: 2,
                 useGrouping: false
             });
             minutesOptions.push({ value: i, text: formattedIndex });
         }
         for (let i = 0; i < secondsInMinute; i++) {
-            const formattedIndex = i.toLocaleString("en-us", {
+            const formattedIndex = i.toLocaleString('en-us', {
                 minimumIntegerDigits: 2,
                 useGrouping: false
             });
@@ -91,24 +99,24 @@ export class TimerCreateComponent implements OnInit {
         const opts: PickerOptions = {
             buttons: [
                 {
-                    text: "Cancel",
-                    role: "cancel",
+                    text: 'Cancel',
+                    role: 'cancel',
                     handler: (value: any): void => {
                         canceled = true;
                     }
                 },
                 {
-                    text: "Done"
+                    text: 'Done'
                 }
             ],
             columns: [
                 {
-                    name: "minutes",
+                    name: 'minutes',
                     options: minutesOptions,
                     selectedIndex: this.minutes.value
                 },
                 {
-                    name: "seconds",
+                    name: 'seconds',
                     options: secondsOptions,
                     selectedIndex: this.seconds.value
                 }
@@ -126,24 +134,16 @@ export class TimerCreateComponent implements OnInit {
 
         picker.present();
         picker.onDidDismiss().then(async data => {
-            const minCol = await picker.getColumn("minutes");
-            const secCol = await picker.getColumn("seconds");
+            const minCol = await picker.getColumn('minutes');
+            const secCol = await picker.getColumn('seconds');
             if (!canceled) {
-                console.log(
-                    "Selected minute: " +
-                        minCol.options[minCol.selectedIndex].text
-                );
-                console.log(
-                    "Selected second: " +
-                        secCol.options[secCol.selectedIndex].text
-                );
                 this.minutes.next(minCol.options[minCol.selectedIndex].value);
                 this.seconds.next(secCol.options[secCol.selectedIndex].value);
                 this.timerForm
-                    .get("minutes")
+                    .get('minutes')
                     .setValue(minCol.options[minCol.selectedIndex].value);
                 this.timerForm
-                    .get("seconds")
+                    .get('seconds')
                     .setValue(secCol.options[secCol.selectedIndex].value);
             }
         });
