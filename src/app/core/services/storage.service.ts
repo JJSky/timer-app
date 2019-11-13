@@ -30,7 +30,7 @@ export class StorageService {
     public async saveTimer(timer: any): Promise<void> {
         console.log('saving countdown timer to local storage', timer);
         const existingTimers = await this._getItem(this._timerKey);
-        if (existingTimers.length > 0) {
+        if (existingTimers !== null && existingTimers.length > 0) {
             console.log('timers already exist, append timer to local storage');
             existingTimers.push(timer);
             await this._storeItem(this._timerKey, existingTimers);
@@ -57,8 +57,11 @@ export class StorageService {
         }
     }
     public async restoreTimers(): Promise<void> {
-        console.log('restore timers', await this._getItem(this._timerKey));
-        this._restoreTimers.emit(await this._getItem(this._timerKey));
+        const savedTimers = await this._getItem(this._timerKey);
+        if (savedTimers !== null) {
+            console.log('restore timers', savedTimers);
+            this._restoreTimers.emit(await this._getItem(this._timerKey));
+        }
     }
 
     private async _storeItem(storageKey: string, value: any): Promise<void> {
