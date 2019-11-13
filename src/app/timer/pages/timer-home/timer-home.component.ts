@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModalService, StorageService } from 'src/app/core/services';
 import { Select } from '@ngxs/store';
 import { TimerState } from 'src/app/core/state';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { TimerDto } from 'src/app/shared/models';
 
 @Component({
@@ -13,6 +13,10 @@ import { TimerDto } from 'src/app/shared/models';
 export class TimerHomeComponent implements OnInit {
     @Select(TimerState.timers)
     public timers$: Observable<TimerDto[]>;
+
+    public isPlaying$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+        false
+    );
 
     public slideOpts: any = {
         initialSlide: 0,
@@ -38,5 +42,10 @@ export class TimerHomeComponent implements OnInit {
             console.log('create timer', res.data);
             await this._storage.saveTimer(res.data);
         }
+    }
+
+    public slideChange(event: any): void {
+        console.log('change slide', event);
+        this.isPlaying$.next(false);
     }
 }

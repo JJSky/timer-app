@@ -1,8 +1,24 @@
 <h1>Name: {{ timer.name }}</h1>
 <ion-button color="danger" (click)="deleteTimer()">Delete</ion-button>
-<ion-fab vertical="bottom" horizontal="center">
+
+<ion-fab slot="fixed" vertical="bottom" horizontal="left">
+    <ion-fab-button color="primary" size="small">
+        <ion-icon name="play"></ion-icon>
+        <ion-icon name="pause"></ion-icon>
+        <ion-ripple-effect></ion-ripple-effect>
+    </ion-fab-button>
+</ion-fab>
+<ion-fab slot="fixed" vertical="bottom" horizontal="center">
     <ion-fab-button color="primary">
         <ion-icon name="play"></ion-icon>
         <ion-icon name="pause"></ion-icon>
+        <ion-ripple-effect></ion-ripple-effect>
+    </ion-fab-button>
+</ion-fab>
+<ion-fab slot="fixed" vertical="bottom" horizontal="right">
+    <ion-fab-button color="primary" size="small">
+        <ion-icon name="play"></ion-icon>
+        <ion-icon name="pause"></ion-icon>
+        <ion-ripple-effect></ion-ripple-effect>
     </ion-fab-button>
 </ion-fab>

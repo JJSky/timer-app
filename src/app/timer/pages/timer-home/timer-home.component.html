@@ -19,6 +19,7 @@
 
 <ion-content>
     <ion-slides
+        (ionSlideDidChange)="slideChange($event)"
         pager="true"
         [options]="slideOpts"
         *ngIf="(timers$ | async)?.length > 0; else noTimers"
