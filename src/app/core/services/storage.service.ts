@@ -11,7 +11,7 @@ const { Storage }: PluginRegistry = Plugins;
     providedIn: 'root'
 })
 export class StorageService {
-    // Emit to this variable to add a timer to state
+    // Emit to this to add a timer to state
     @Emitter(TimerState.addTimer)
     private _addTimer: Emittable<TimerDto>;
 
@@ -64,6 +64,7 @@ export class StorageService {
         }
     }
 
+    // Facilitate JSON stringifying and parsing
     private async _storeItem(storageKey: string, value: any): Promise<void> {
         const valueAsString = JSON.stringify(value);
         await Storage.set({ key: storageKey, value: valueAsString });
