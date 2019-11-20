@@ -6,6 +6,7 @@ import { Emitter, Emittable } from '@ngxs-labs/emitter';
 import { TimerDto } from 'src/app/shared/models';
 
 const { Storage }: PluginRegistry = Plugins;
+const uuidv1 = require('uuid/v1');
 
 @Injectable({
     providedIn: 'root'
@@ -28,6 +29,8 @@ export class StorageService {
     constructor() {}
 
     public async saveTimer(timer: any): Promise<void> {
+        // Generate and append unique id
+        console.log(uuidv1());
         console.log('saving countdown timer to local storage', timer);
         const existingTimers = await this._getItem(this._timerKey);
         if (existingTimers !== null && existingTimers.length > 0) {
