@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ViewChild,
+    QueryList,
+    ViewChildren
+} from '@angular/core';
 import {
     FormGroup,
     FormBuilder,
@@ -23,7 +29,7 @@ const uuidv1 = require('uuid/v1');
     styleUrls: ['./circuit-create.component.scss']
 })
 export class CircuitCreateComponent implements OnInit {
-    @ViewChild('swipeable', { static: false }) swipeable: any;
+    @ViewChildren('swipeable') swipeable: QueryList<IonItemSliding>;
 
     public timers: any;
     public circuitForm: FormGroup;
@@ -48,16 +54,21 @@ export class CircuitCreateComponent implements OnInit {
             circuitName: ['', [Validators.required]],
             timers: this._fb.array([this.createTimer()])
         });
-        this.peekSlideItem();
+        const peekDelay = 500;
+        setTimeout(() => {
+            this.peekSlideItem();
+        }, peekDelay);
     }
 
     public peekSlideItem(): void {
-        const peekTime = 1000;
-        console.log(this.swipeable);
-        // this.swipeable.open('end');
-        // setTimeout(() => {
-        //     this.swipeable.close();
-        // }, peekTime);
+        const peekTime = 800;
+        const ionSlideItemArray = this.swipeable.toArray();
+        ionSlideItemArray[0].open('end').then(res => {
+            console.log(res);
+        });
+        setTimeout(() => {
+            ionSlideItemArray[0].close();
+        }, peekTime);
     }
 
     public isValid(field: FormControl, type: string): boolean {
@@ -77,6 +88,7 @@ export class CircuitCreateComponent implements OnInit {
     }
     public addTimer(): void {
         this.timersFormArray.push(this.createTimer());
+        this.peekSlideItem();
     }
     public deleteTimer(index: number): void {
         this.timersFormArray.controls.splice(index, 1);
