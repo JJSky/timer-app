@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { TimerCreateComponent } from './modals';
-import { TimerDto } from './models';
+import { CircuitCreateComponent } from './modals';
+import { models } from './models';
 
 @NgModule({
-    declarations: [TimerCreateComponent],
+    declarations: [CircuitCreateComponent],
     imports: [CommonModule, IonicModule, ReactiveFormsModule],
-    entryComponents: [TimerCreateComponent],
-    providers: [TimerDto]
+    entryComponents: [CircuitCreateComponent],
+    providers: [models]
 })
 export class SharedModule {}

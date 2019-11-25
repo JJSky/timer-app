@@ -1,0 +1,44 @@
+:host {
+    ion-card {
+        ion-card-header {
+            padding-top: 0;
+            padding-bottom: 0;
+
+            ion-input {
+                --padding-start: 0;
+            }
+        }
+        ion-item {
+            --border-width: 0;
+        }
+        ion-input {
+            --padding-end: 0;
+        }
+        ion-button {
+            --padding-start: 0;
+
+            &.add-timer {
+                margin: 0 10px 10px;
+            }
+        }
+    }
+    .error-message {
+        padding: 6px 16px;
+        color: var(--ion-color-danger);
+        display: flex;
+        align-items: center;
+
+        ion-icon {
+            margin-right: 5px;
+        }
+    }
+    .errors {
+        color: var(--ion-color-danger);
+        font-weight: bold;
+        padding: 5px;
+        text-align: center;
+    }
+    ion-button[type='submit'] {
+        margin: 16px;
+    }
+}

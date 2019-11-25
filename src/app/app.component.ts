@@ -27,6 +27,6 @@ export class AppComponent {
         });
 
         // Restore timers
-        this._storageService.restoreTimers();
+        this._storageService.restoreCircuits();
     }
 }

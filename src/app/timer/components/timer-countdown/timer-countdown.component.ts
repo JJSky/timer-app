@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { TimerDto } from 'src/app/shared/models';
+import { CircuitDto } from 'src/app/shared/models';
 import { StorageService } from 'src/app/core/services';
 
 @Component({
@@ -9,13 +9,13 @@ import { StorageService } from 'src/app/core/services';
 })
 export class TimerCountdownComponent implements OnInit {
     @Input()
-    public timer: TimerDto;
+    public circuit: CircuitDto;
 
     constructor(private _storageService: StorageService) {}
 
     ngOnInit(): void {}
 
-    public deleteTimer(): void {
-        this._storageService.deleteTimer(this.timer);
+    public deleteCircuit(): void {
+        this._storageService.deleteCircuit(this.circuit);
     }
 }

@@ -1,0 +1,148 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="secondary">
+            <ion-buttons slot="start">
+                <ion-button (click)="dismiss()">
+                    Cancel
+                    <ion-ripple-effect></ion-ripple-effect>
+                </ion-button>
+            </ion-buttons>
+        </ion-buttons>
+        <ion-title>
+            New Circuit
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <form
+        [formGroup]="circuitForm"
+        (ngSubmit)="submitCircuit(circuitForm)"
+        #formRef="ngForm"
+    >
+        <ion-item>
+            <ion-label position="Fixed">Circuit Name</ion-label>
+            <ion-input
+                class="ion-text-right"
+                placeholder="Name your circuit"
+                formControlName="circuitName"
+            ></ion-input>
+        </ion-item>
+        <div class="validation-errors">
+            <ng-container
+                *ngFor="let validation of validationMessages.circuitName"
+            >
+                <div
+                    class="error-message"
+                    *ngIf="
+                        isValid(circuitForm.get('circuitName'), validation.type)
+                    "
+                >
+                    <ion-icon name="information-circle"></ion-icon
+                    >{{ validation.message }}
+                </div>
+            </ng-container>
+        </div>
+        <ion-card>
+            <ion-list>
+                <ion-reorder-group
+                    formArrayName="timers"
+                    (ionItemReorder)="doReorder($event)"
+                    disabled="false"
+                >
+                    <ion-item-sliding
+                        *ngFor="
+                            let timer of timersFormArray.controls;
+                            let i = index
+                        "
+                        [formGroupName]="i"
+                    >
+                        <ion-item>
+                            <ion-input
+                                placeholder="Timer Name"
+                                formControlName="name"
+                            ></ion-input>
+                            <ion-item
+                                button="true"
+                                lines="none"
+                                (click)="chooseTime(timer, i)"
+                            >
+                                <div class="time">
+                                    <span class="minute"
+                                        >{{
+                                            timer.get('minutes').value
+                                                | number: '2.0-0'
+                                        }}m</span
+                                    >
+                                    <span class="second">
+                                        {{
+                                            timer.get('seconds').value
+                                                | number: '2.0-0'
+                                        }}s</span
+                                    >
+                                </div>
+                            </ion-item>
+                            <ion-reorder></ion-reorder>
+                        </ion-item>
+                        <ion-item-options side="end">
+                            <button
+                                ion-button
+                                color="warning"
+                                (click)="deleteTimer(i)"
+                            >
+                                Delete
+                            </button>
+                        </ion-item-options>
+
+                        <div class="validation-errors">
+                            <ng-container
+                                *ngFor="
+                                    let validation of validationMessages.timer
+                                "
+                            >
+                                <div
+                                    class="error-message"
+                                    *ngIf="
+                                        isValid(
+                                            timersFormArray.controls[i].get(
+                                                'totalTime'
+                                            ),
+                                            validation.type
+                                        )
+                                    "
+                                >
+                                    <ion-icon
+                                        name="information-circle"
+                                    ></ion-icon
+                                    >{{ validation.message }}
+                                </div>
+                            </ng-container>
+                        </div>
+                    </ion-item-sliding>
+                </ion-reorder-group>
+            </ion-list>
+            <ion-button
+                type="button"
+                expand="block"
+                (click)="addTimer()"
+                class="add-timer"
+            >
+                Add Timer
+            </ion-button>
+        </ion-card>
+        <div *ngFor="let error of errors$ | async" class="errors">
+            {{ error }}
+        </div>
+    </form>
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar>
+        <ion-button
+            type="button"
+            expand="block"
+            (click)="formRef.ngSubmit.emit()"
+        >
+            Submit
+        </ion-button>
+    </ion-toolbar>
+</ion-footer>

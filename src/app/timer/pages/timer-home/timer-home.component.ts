@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalService, StorageService } from 'src/app/core/services';
 import { Select } from '@ngxs/store';
-import { TimerState } from 'src/app/core/state';
+import { CircuitState } from 'src/app/core/state';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { TimerDto } from 'src/app/shared/models';
+import { CircuitDto } from 'src/app/shared/models';
 
 @Component({
     selector: 'app-timer-home',
@@ -11,8 +11,8 @@ import { TimerDto } from 'src/app/shared/models';
     styleUrls: ['./timer-home.component.scss']
 })
 export class TimerHomeComponent implements OnInit {
-    @Select(TimerState.timers)
-    public timers$: Observable<TimerDto[]>;
+    @Select(CircuitState.circuits)
+    public circuits$: Observable<CircuitDto[]>;
 
     public isPlaying$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
         false
@@ -32,15 +32,17 @@ export class TimerHomeComponent implements OnInit {
     ) {}
 
     async ngOnInit(): Promise<void> {
+        // For easier dev
+        this.createCircuit();
         // console.log(await this._storage.getCountdownTimer());
     }
 
-    public async createTimer(): Promise<void> {
-        const modal = await this._modalService.createTimer();
+    public async createCircuit(): Promise<void> {
+        const modal = await this._modalService.createCircuit();
         const res = await modal.onDidDismiss();
         if (!!res.data) {
             console.log('create timer', res.data);
-            await this._storage.saveTimer(res.data);
+            await this._storage.saveCircuit(res.data);
         }
     }
 

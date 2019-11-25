@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { TimerCreateComponent } from '../../shared/modals/timer-create/timer-create.component';
+import { CircuitCreateComponent } from '../../shared/modals/circuit-create/circuit-create.component';
 
 @Injectable({
     providedIn: 'root'
@@ -8,9 +8,9 @@ import { TimerCreateComponent } from '../../shared/modals/timer-create/timer-cre
 export class ModalService {
     constructor(private _modalCtrl: ModalController) {}
 
-    public async createTimer(): Promise<HTMLIonModalElement> {
+    public async createCircuit(): Promise<HTMLIonModalElement> {
         const modal = await this._modalCtrl.create({
-            component: TimerCreateComponent
+            component: CircuitCreateComponent
         });
         await modal.present();
         return modal;

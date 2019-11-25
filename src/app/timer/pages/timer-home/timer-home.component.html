@@ -6,10 +6,10 @@
             </ion-button>
         </ion-buttons> -->
         <ion-title>
-            Jadryan's Timers
+            Jadryan's Circuits
         </ion-title>
         <ion-buttons slot="primary">
-            <ion-button (click)="createTimer()" title="Add new timer">
+            <ion-button (click)="createCircuit()" title="Add new circuit">
                 <ion-icon slot="icon-only" name="add"></ion-icon>
                 <ion-ripple-effect></ion-ripple-effect>
             </ion-button>
@@ -22,11 +22,11 @@
         (ionSlideDidChange)="slideChange($event)"
         pager="true"
         [options]="slideOpts"
-        *ngIf="(timers$ | async)?.length > 0; else noTimers"
+        *ngIf="(circuits$ | async)?.length > 0; else noCircuits"
     >
-        <ion-slide *ngFor="let timer of timers$ | async">
-            <app-timer-countdown [timer]="timer"></app-timer-countdown>
+        <ion-slide *ngFor="let circuit of circuits$ | async">
+            <app-timer-countdown [circuit]="circuit"></app-timer-countdown>
         </ion-slide>
     </ion-slides>
-    <ng-template #noTimers>No timers</ng-template>
+    <ng-template #noCircuits>No circuits</ng-template>
 </ion-content>

@@ -1,1 +1,1 @@
-export { TimerCreateComponent } from './timer-create/timer-create.component';
+export { CircuitCreateComponent } from './circuit-create/circuit-create.component';
