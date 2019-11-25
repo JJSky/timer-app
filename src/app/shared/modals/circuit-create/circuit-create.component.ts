@@ -88,7 +88,6 @@ export class CircuitCreateComponent implements OnInit {
     }
     public addTimer(): void {
         this.timersFormArray.push(this.createTimer());
-        this.peekSlideItem();
     }
     public deleteTimer(index: number): void {
         this.timersFormArray.controls.splice(index, 1);
