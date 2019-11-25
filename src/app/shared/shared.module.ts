@@ -4,12 +4,12 @@ import { IonicModule } from '@ionic/angular';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { CircuitCreateComponent } from './modals';
-import { models } from './models';
+import { TimerDto, CircuitDto } from './models';
 
 @NgModule({
     declarations: [CircuitCreateComponent],
     imports: [CommonModule, IonicModule, ReactiveFormsModule],
     entryComponents: [CircuitCreateComponent],
-    providers: [models]
+    providers: []
 })
 export class SharedModule {}

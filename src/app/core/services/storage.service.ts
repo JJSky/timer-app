@@ -3,7 +3,7 @@ import { Plugins, PluginRegistry } from '@capacitor/core';
 import { CountdownTimer } from 'ngx-countdown';
 import { TimerState, CircuitState } from '../state';
 import { Emitter, Emittable } from '@ngxs-labs/emitter';
-import { TimerDto, CircuitDto } from 'src/app/shared/models';
+import { CircuitDto } from 'src/app/shared/models';
 
 const { Storage }: PluginRegistry = Plugins;
 

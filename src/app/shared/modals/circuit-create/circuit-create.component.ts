@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
     FormGroup,
     FormBuilder,
@@ -8,7 +8,11 @@ import {
     FormControl
 } from '@angular/forms';
 import { PickerOptions, PickerColumnOption } from '@ionic/core';
-import { PickerController, ModalController } from '@ionic/angular';
+import {
+    PickerController,
+    ModalController,
+    IonItemSliding
+} from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
 import { TimerDto, CircuitDto } from '../../models';
 const uuidv1 = require('uuid/v1');
@@ -19,6 +23,8 @@ const uuidv1 = require('uuid/v1');
     styleUrls: ['./circuit-create.component.scss']
 })
 export class CircuitCreateComponent implements OnInit {
+    @ViewChild('swipeable', { static: false }) swipeable: any;
+
     public timers: any;
     public circuitForm: FormGroup;
     public errors$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(
@@ -42,6 +48,16 @@ export class CircuitCreateComponent implements OnInit {
             circuitName: ['', [Validators.required]],
             timers: this._fb.array([this.createTimer()])
         });
+        this.peekSlideItem();
+    }
+
+    public peekSlideItem(): void {
+        const peekTime = 1000;
+        console.log(this.swipeable);
+        // this.swipeable.open('end');
+        // setTimeout(() => {
+        //     this.swipeable.close();
+        // }, peekTime);
     }
 
     public isValid(field: FormControl, type: string): boolean {
@@ -209,8 +225,8 @@ export class CircuitCreateComponent implements OnInit {
         //     return;
         // }
 
-        // this.dismiss(value);
         console.log(newCircuit);
+        this.dismiss(newCircuit);
     }
 
     public dismiss(data?: any): void {
