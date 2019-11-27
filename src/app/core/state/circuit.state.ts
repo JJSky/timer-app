@@ -16,12 +16,18 @@ export interface CircuitStateModel {
 export class CircuitState {
     constructor() {}
 
+    /**
+     * Returns all circuits from the circuit state.
+     */
     @Selector()
     @ImmutableSelector()
     public static circuits(state: CircuitStateModel): CircuitDto[] {
         return state.circuits;
     }
 
+    /**
+     * Add a new circuit to the circuit state.
+     */
     @Receiver()
     @ImmutableContext()
     public static addCircuit(
@@ -34,6 +40,9 @@ export class CircuitState {
         });
     }
 
+    /**
+     * Delete circuit from the circuit state.
+     */
     @Receiver()
     @ImmutableContext()
     public static deleteCircuit(
@@ -47,6 +56,9 @@ export class CircuitState {
         });
     }
 
+    /**
+     * Overwrite all circuits in circuit state.
+     */
     @Receiver()
     @ImmutableContext()
     public static restoreCircuits(

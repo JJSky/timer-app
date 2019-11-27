@@ -25,7 +25,7 @@
         *ngIf="(circuits$ | async)?.length > 0; else noCircuits"
     >
         <ion-slide *ngFor="let circuit of circuits$ | async">
-            <app-timer-countdown [circuit]="circuit"></app-timer-countdown>
+            <app-circuit-view [circuit]="circuit"></app-circuit-view>
         </ion-slide>
     </ion-slides>
     <ng-template #noCircuits>No circuits</ng-template>

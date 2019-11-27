@@ -28,12 +28,12 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
         IonicModule.forRoot(),
         RouterModule.forRoot([
             {
-                path: 'timer',
-                loadChildren: './timer/timer.module#TimerModule'
+                path: 'home',
+                loadChildren: './circuit/circuit.module#CircuitModule'
             },
             {
                 path: '**',
-                redirectTo: '/timer'
+                redirectTo: '/home'
             }
         ])
     ],

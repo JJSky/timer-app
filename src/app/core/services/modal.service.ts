@@ -8,7 +8,10 @@ import { CircuitCreateComponent } from '../../shared/modals/circuit-create/circu
 export class ModalService {
     constructor(private _modalCtrl: ModalController) {}
 
-    public async createCircuit(): Promise<HTMLIonModalElement> {
+    /**
+     * Open modal for creating a circuit
+     */
+    public async openCreateCircuitModal(): Promise<HTMLIonModalElement> {
         const modal = await this._modalCtrl.create({
             component: CircuitCreateComponent
         });

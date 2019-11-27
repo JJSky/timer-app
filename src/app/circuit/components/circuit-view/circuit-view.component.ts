@@ -3,11 +3,11 @@ import { CircuitDto } from 'src/app/shared/models';
 import { StorageService } from 'src/app/core/services';
 
 @Component({
-    selector: 'app-timer-countdown',
-    templateUrl: './timer-countdown.component.html',
-    styleUrls: ['./timer-countdown.component.scss']
+    selector: 'app-circuit-view',
+    templateUrl: './circuit-view.component.html',
+    styleUrls: ['./circuit-view.component.scss']
 })
-export class TimerCountdownComponent implements OnInit {
+export class CircuitViewComponent implements OnInit {
     @Input()
     public circuit: CircuitDto;
 

@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TimerHomeComponent } from './timer-home.component';
+import { CircuitHomeComponent } from './circuit-home.component';
 
-describe('TimerHomeComponent', () => {
-    let component: TimerHomeComponent;
-    let fixture: ComponentFixture<TimerHomeComponent>;
+describe('CircuitHomeComponent', () => {
+    let component: CircuitHomeComponent;
+    let fixture: ComponentFixture<CircuitHomeComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [TimerHomeComponent]
+            declarations: [CircuitHomeComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(TimerHomeComponent);
+        fixture = TestBed.createComponent(CircuitHomeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

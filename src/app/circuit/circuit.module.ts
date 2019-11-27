@@ -6,11 +6,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { CountdownModule } from 'ngx-countdown';
 
-import { TimerHomeComponent } from './pages';
-import { TimerCountdownComponent } from './components';
+import { CircuitHomeComponent } from './pages';
+import { CircuitViewComponent } from './components';
 
 @NgModule({
-    declarations: [TimerHomeComponent, TimerCountdownComponent],
+    declarations: [CircuitHomeComponent, CircuitViewComponent],
     imports: [
         CommonModule,
         IonicModule,
@@ -20,14 +20,14 @@ import { TimerCountdownComponent } from './components';
         RouterModule.forChild([
             {
                 path: '',
-                component: TimerHomeComponent
+                component: CircuitHomeComponent
             },
             {
                 path: '**',
                 pathMatch: 'full',
-                redirectTo: '/timer'
+                redirectTo: '/home'
             }
         ])
     ]
 })
-export class TimerModule {}
+export class CircuitModule {}

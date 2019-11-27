@@ -37,7 +37,10 @@ export class StorageService {
 
     constructor() {}
 
-    // ~~~~~~~~~~~~~~ CIRCUITS START HERE ~~~~~~~~~~~~~~
+    /**
+     * Saves circuit to local storage and circuit state.
+     * @param circuit Circuit to save to local storage & state.
+     */
     public async saveCircuit(circuit: CircuitDto): Promise<void> {
         console.log('saving circuit to local storage', circuit);
         const existingCircuits = await this._getItem(this._circuitKey);
@@ -54,6 +57,11 @@ export class StorageService {
         console.log('save circuit to state');
         this._addCircuit.emit(circuit);
     }
+
+    /**
+     * Deletes a circuit from local storage and circuit state.
+     * @param circuit Circuit to delete from local storage & state.
+     */
     public async deleteCircuit(circuit: CircuitDto): Promise<void> {
         const existingCircuits = await this._getItem(this._circuitKey);
         const index = existingCircuits.indexOf(circuit);
@@ -63,10 +71,14 @@ export class StorageService {
             existingCircuits.splice(index);
             this._storeItem(this._circuitKey, existingCircuits);
 
-            // Remove timer from state
+            // Remove circuit from state
             this._deleteCircuit.emit(circuit);
         }
     }
+
+    /**
+     * Get circuits from local storage and overwrite circuit state.
+     */
     public async restoreCircuits(): Promise<void> {
         const savedCircuits = await this._getItem(this._circuitKey);
         if (savedCircuits !== null && savedCircuits.length > 0) {
@@ -118,11 +130,20 @@ export class StorageService {
     //     }
     // }
 
-    // Facilitate JSON stringifying and parsing
+    /**
+     * JSON stringifies and stores key value pair in local storage.
+     * @param storageKey Key to save value under.
+     * @param value Value to save in local storage.
+     */
     private async _storeItem(storageKey: string, value: any): Promise<void> {
         const valueAsString = JSON.stringify(value);
         await Storage.set({ key: storageKey, value: valueAsString });
     }
+
+    /**
+     * Gets value from local storage based on key.
+     * @param storageKey Key to retreive data with.
+     */
     private async _getItem(storageKey: string): Promise<any> {
         const item = await Storage.get({ key: storageKey });
         return JSON.parse(item.value);
