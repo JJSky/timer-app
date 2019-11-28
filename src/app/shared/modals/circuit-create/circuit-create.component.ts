@@ -29,13 +29,26 @@ const uuidv1 = require('uuid/v1');
     styleUrls: ['./circuit-create.component.scss']
 })
 export class CircuitCreateComponent implements OnInit {
-    @ViewChildren('swipeable') swipeable: QueryList<IonItemSliding>;
+    /**
+     * Get element reference to list of IonItemSliding elements.
+     */
+    @ViewChildren('slideable') slidables: QueryList<IonItemSliding>;
 
-    public timers: any;
+    /**
+     * Form for a circuit and the timers within it.
+     */
     public circuitForm: FormGroup;
+
+    /**
+     * Array for holding errors from manual form validation.
+     */
     public errors$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(
         []
     );
+
+    /**
+     * Validation error messages defined here.
+     */
     public validationMessages: any = {
         circuitName: [
             { type: 'required', message: 'Circuit name is required.' }
@@ -54,28 +67,53 @@ export class CircuitCreateComponent implements OnInit {
             circuitName: ['', [Validators.required]],
             timers: this._fb.array([this.createTimer()])
         });
+        this.peekSlideItem();
+    }
+
+    /**
+     * Animates first item in IonItemSlide to demonstrate that
+     * there are hidden actions available from swiping on the item.
+     */
+    public peekSlideItem(): void {
         const peekDelay = 500;
+        const peekTime = 800;
+
         setTimeout(() => {
-            this.peekSlideItem();
+            const ionSlideItemArray = this.slidables.toArray();
+            ionSlideItemArray[0].open('end');
+            setTimeout(() => {
+                ionSlideItemArray[0].close();
+            }, peekTime);
         }, peekDelay);
     }
 
-    public peekSlideItem(): void {
-        const peekTime = 800;
-        const ionSlideItemArray = this.swipeable.toArray();
-        ionSlideItemArray[0].open('end').then(res => {
-            console.log(res);
-        });
-        setTimeout(() => {
-            ionSlideItemArray[0].close();
-        }, peekTime);
-    }
-
+    /**
+     * Check if field is valid based on validation type.
+     * @param field Form field to validate.
+     * @param type Type of validation to perform on field.
+     */
     public isValid(field: FormControl, type: string): boolean {
         return field.hasError(type) && (field.dirty || field.touched);
     }
 
-    // Form array stuff starts here
+    // ~~~~~~~~~~~~~~~~~~ Form array stuff starts here ~~~~~~~~~~~~~~~~~~
+    /**
+     * Get reference to timers FormArray from circuitForm.
+     */
+    public get timersFormArray(): FormArray {
+        return this.circuitForm.get('timers') as FormArray;
+    }
+
+    /**
+     * Add timer to timers FormArray.
+     */
+    public addTimer(): void {
+        this.timersFormArray.push(this.createTimer());
+    }
+
+    /**
+     * Returns new formgroup for a timer.
+     */
     public createTimer(): FormGroup {
         const maxMinutes = 59;
         const maxSeconds = 59;
@@ -86,17 +124,20 @@ export class CircuitCreateComponent implements OnInit {
             totalTime: [0, [Validators.required, Validators.min(1)]]
         });
     }
-    public addTimer(): void {
-        this.timersFormArray.push(this.createTimer());
-    }
+
+    /**
+     * Delete timer from timers FormArray.
+     * @param index Index of timer to delete.
+     */
     public deleteTimer(index: number): void {
         this.timersFormArray.controls.splice(index, 1);
     }
-    public get timersFormArray(): FormArray {
-        return this.circuitForm.get('timers') as FormArray;
-    }
+
+    /**
+     * Handle updating formArray when dragging ion-reorder
+     * @param event Drop event.
+     */
     public doReorder(event: any): void {
-        // Handle updating formArray when dragging ion-reorder
         const dir = event.detail.to > event.detail.from ? 1 : -1;
 
         const from = event.detail.from;
@@ -110,9 +151,13 @@ export class CircuitCreateComponent implements OnInit {
         this.timersFormArray.setControl(to, temp);
         event.detail.complete();
     }
-    // Form array stuff ends here
+    // ~~~~~~~~~~~~~~~~~~ Form array stuff ends here ~~~~~~~~~~~~~~~~~~
 
-    public async chooseTime(timer: FormGroup, index: number): Promise<void> {
+    /**
+     * Select minutes and seconds for individual timer.
+     * @param timer Autofill picker with previously selected values.
+     */
+    public async chooseTime(timer: FormGroup): Promise<void> {
         let canceled = false;
         const minutesInHour = 60;
         const secondsInMinute = 60;
@@ -190,6 +235,9 @@ export class CircuitCreateComponent implements OnInit {
         });
     }
 
+    /**
+     * Submit circuit form by dismissing modal with circuit data.
+     */
     public async submitCircuit({
         valid,
         value
@@ -240,6 +288,10 @@ export class CircuitCreateComponent implements OnInit {
         this.dismiss(newCircuit);
     }
 
+    /**
+     * Dismiss modal with or without data.
+     * @param data Data to pass to parent component.
+     */
     public dismiss(data?: any): void {
         this._modalCtrl.dismiss(data);
     }
