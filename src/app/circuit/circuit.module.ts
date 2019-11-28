@@ -7,10 +7,14 @@ import { SharedModule } from '../shared/shared.module';
 import { CountdownModule } from 'ngx-countdown';
 
 import { CircuitHomeComponent } from './pages';
-import { CircuitViewComponent } from './components';
+import { CircuitViewComponent, CircuitFabsComponent } from './components';
 
 @NgModule({
-    declarations: [CircuitHomeComponent, CircuitViewComponent],
+    declarations: [
+        CircuitHomeComponent,
+        CircuitViewComponent,
+        CircuitFabsComponent
+    ],
     imports: [
         CommonModule,
         IonicModule,

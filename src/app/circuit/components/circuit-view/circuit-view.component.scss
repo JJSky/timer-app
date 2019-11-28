@@ -1,24 +1,9 @@
 :host {
-    ion-fab {
-        display: flex;
-        transform: translateX(-50%);
-        margin: auto;
+    height: calc(100% - 150px);
+    margin: 50px 0 100px;
+    width: 100%;
 
-        ion-fab-button {
-            &.secondary {
-                --background: transparent;
-                --background-activated: transparent;
-                --ripple-color: orange;
-                --color: #000000;
-                --color-activated: #000000;
-                --box-shadow: none;
-            }
-            &.play {
-                margin: 0 15px;
-            }
-            ion-icon {
-                font-size: 24px;
-            }
-        }
+    ion-slides {
+        height: 100%;
     }
 }
