@@ -1,14 +1,27 @@
 <h1>{{ circuit.name }}</h1>
 <ion-list>
-    <ion-item *ngFor="let timer of circuit.timers">
+    <ion-item *ngFor="let timer of circuit.timers" [disabled]="countdownTimer.left === 0">
         <div class="timer-wrapper">
             <span class="name">{{ timer.name }}</span>
             <span class="countdown">
+                <!-- {{ timer.minutes | number: '2.0' }}:{{ timer.seconds | number: '2.0' }} -->
                 <countdown
-                    [config]="{ leftTime: timer.seconds, demand: true, format: 'm:s.S' }"
+                    #countdownTimer
+                    [config]="{
+                        leftTime: timer.seconds + timer.minutes * 60,
+                        demand: true,
+                        format: 'mm:ss.S'
+                    }"
+                    (event)="handleTimer($event)"
                 ></countdown>
             </span>
         </div>
     </ion-item>
 </ion-list>
-<app-circuit-fabs (play)="play()" (skip)="skip()" (delete)="deleteCircuit()"></app-circuit-fabs>
+<app-circuit-fabs
+    [circuitComplete]="isCountingDown$ | async"
+    [isCountingDown]="isCountingDown$ | async"
+    (play)="play()"
+    (skip)="skip()"
+    (delete)="deleteCircuit()"
+></app-circuit-fabs>

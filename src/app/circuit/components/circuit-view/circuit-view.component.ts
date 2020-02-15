@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, QueryList, ViewChildren } from '@angular/core';
 import { CircuitDto } from '@shared/models';
-import { StorageService } from '@core/services';
-import { IonSlides } from '@ionic/angular';
+import { StorageService, ModalService } from '@core/services';
+import { CountdownComponent, CountdownEvent } from 'ngx-countdown';
+import { Subject, BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-circuit-view',
@@ -12,31 +13,53 @@ export class CircuitViewComponent implements OnInit {
     @Input()
     public circuit: CircuitDto;
 
-    @ViewChild('timers', { static: false }) timerSlides: IonSlides;
+    public playIndex: number = 0;
+    public isCountingDown$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    public circuitComplete$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-    /** Options for ion-slider. */
-    public slideOpts: any = {
-        direction: 'vertical',
-        centeredSlides: true,
-        slidesPerView: 4,
-        initialSlide: 0,
-        speed: 400,
-        renderBullet: (index, className): string => {
-            return '<span class="' + className + '">' + (index + 1) + '</span>';
-        }
-    };
+    @ViewChildren('countdownTimer') timers: QueryList<CountdownComponent>;
 
-    constructor(private _storageService: StorageService) {}
+    constructor(
+        private readonly _storageService: StorageService,
+        private readonly _modalService: ModalService
+    ) {}
 
     ngOnInit(): void {}
 
+    /** Output and handle events output by timers. */
+    public handleTimer(e: CountdownEvent): void {
+        console.log('timer event: ', e);
+        if (e.action === 'done') {
+            this.isCountingDown$.next(false);
+            this.playIndex++;
+            this.play();
+        }
+    }
+
+    /** Play or pause timers based on status. */
     public play(): void {
-        console.log('play here');
+        const curTimers = this.timers.toArray();
+
+        // If timer counting down, pause it. Otherwise, play
+        if (this.isCountingDown$.value) {
+            console.log('pause');
+            curTimers[this.playIndex].pause();
+            this.isCountingDown$.next(false);
+        } else if (this.playIndex < curTimers.length) {
+            console.log('play');
+            curTimers[this.playIndex].resume();
+            this.isCountingDown$.next(true);
+        }
     }
     public skip(): void {
         console.log('skip here');
     }
-    public deleteCircuit(): void {
-        this._storageService.deleteCircuit(this.circuit);
+    public async deleteCircuit(): Promise<void> {
+        const alert = await this._modalService.confirmCircuitDeleteModal(this.circuit);
+        const res = await alert.onDidDismiss();
+        if (!!res.data && res.data === true) {
+            console.log('delete circuit', res.data);
+            this._storageService.deleteCircuit(this.circuit);
+        }
     }
 }

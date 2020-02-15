@@ -1,11 +1,25 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+    ChangeDetectionStrategy
+} from '@angular/core';
 
 @Component({
     selector: 'app-circuit-fabs',
     templateUrl: './circuit-fabs.component.html',
-    styleUrls: ['./circuit-fabs.component.scss']
+    styleUrls: ['./circuit-fabs.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CircuitFabsComponent implements OnInit {
+    @Input()
+    public isCountingDown: boolean;
+
+    @Input()
+    public circuitComplete: boolean;
+
     @Output()
     public play: EventEmitter<any> = new EventEmitter<any>();
 
