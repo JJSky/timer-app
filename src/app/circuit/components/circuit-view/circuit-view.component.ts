@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, QueryList, ViewChildren } from '@angular/core';
-import { CircuitDto } from '@shared/models';
+import { CircuitDto, TimerDto } from '@shared/models';
 import { StorageService, ModalService } from '@core/services';
 import { CountdownComponent, CountdownEvent } from 'ngx-countdown';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { take, map, startWith } from 'rxjs/operators';
 
 @Component({
     selector: 'app-circuit-view',
@@ -10,13 +11,22 @@ import { Subject, BehaviorSubject } from 'rxjs';
     styleUrls: ['./circuit-view.component.scss']
 })
 export class CircuitViewComponent implements OnInit {
-    @Input()
-    public circuit: CircuitDto;
+    public circuit$: BehaviorSubject<CircuitDto> = new BehaviorSubject(null);
+    @Input('circuit')
+    public set setCircuit(value: CircuitDto) {
+        this.circuit$.next(value);
+    }
+
+    public readonly timers$: Observable<TimerDto[]> = this.circuit$.pipe(
+        map(circuit => circuit.timers),
+        startWith([])
+    );
 
     public playIndex: number = 0;
     public isCountingDown$: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public circuitComplete$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+    /** Access to the countdown timers on the page. */
     @ViewChildren('countdownTimer') timers: QueryList<CountdownComponent>;
 
     constructor(
@@ -30,6 +40,7 @@ export class CircuitViewComponent implements OnInit {
     public handleTimer(e: CountdownEvent): void {
         console.log('timer event: ', e);
         if (e.action === 'done') {
+            // When timer complete, increase index and play next timer
             this.isCountingDown$.next(false);
             this.playIndex++;
             this.play();
@@ -39,6 +50,17 @@ export class CircuitViewComponent implements OnInit {
     /** Play or pause timers based on status. */
     public play(): void {
         const curTimers = this.timers.toArray();
+
+        // If circuit complete when user presses play button, reset timers
+        if (this.circuitComplete$.value) {
+            this.resetTimers();
+        }
+
+        // Check if circuit is complete
+        if (this.playIndex >= curTimers.length) {
+            this.circuitComplete$.next(true);
+            return;
+        }
 
         // If timer counting down, pause it. Otherwise, play
         if (this.isCountingDown$.value) {
@@ -51,15 +73,30 @@ export class CircuitViewComponent implements OnInit {
             this.isCountingDown$.next(true);
         }
     }
+
+    /** Skip to next timer in circuit. */
     public skip(): void {
         console.log('skip here');
+        const curTimers = this.timers.toArray();
+        curTimers[this.playIndex].stop();
+        console.log(curTimers[this.playIndex].event);
+        this.isCountingDown$.next(false);
+        this.playIndex++;
+        this.play();
     }
+
+    /** Reset timers to initial state. */
+    public resetTimers(): void {
+        console.log('reset timers');
+    }
+
+    /** Delete circuit. */
     public async deleteCircuit(): Promise<void> {
-        const alert = await this._modalService.confirmCircuitDeleteModal(this.circuit);
+        const alert = await this._modalService.confirmCircuitDeleteModal(this.circuit$.value);
         const res = await alert.onDidDismiss();
         if (!!res.data && res.data === true) {
             console.log('delete circuit', res.data);
-            this._storageService.deleteCircuit(this.circuit);
+            this._storageService.deleteCircuit(this.circuit$.value);
         }
     }
 }

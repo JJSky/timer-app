@@ -1,10 +1,12 @@
-<h1>{{ circuit.name }}</h1>
+<h1>{{ (circuit$ | async).name }}</h1>
 <ion-list>
-    <ion-item *ngFor="let timer of circuit.timers" [disabled]="countdownTimer.left === 0">
+    <ion-item
+        *ngFor="let timer of timers$ | async"
+        [disabled]="countdownTimer.left === 0 || countdownTimer.event.isStopped"
+    >
         <div class="timer-wrapper">
             <span class="name">{{ timer.name }}</span>
             <span class="countdown">
-                <!-- {{ timer.minutes | number: '2.0' }}:{{ timer.seconds | number: '2.0' }} -->
                 <countdown
                     #countdownTimer
                     [config]="{
@@ -19,7 +21,7 @@
     </ion-item>
 </ion-list>
 <app-circuit-fabs
-    [circuitComplete]="isCountingDown$ | async"
+    [circuitComplete]="circuitComplete$ | async"
     [isCountingDown]="isCountingDown$ | async"
     (play)="play()"
     (skip)="skip()"
