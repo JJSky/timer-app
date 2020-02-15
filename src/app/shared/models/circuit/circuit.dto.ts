@@ -1,4 +1,4 @@
-import { TimerDto } from '../timer/timer-dto.model';
+import { TimerDto } from '../timer/timer.dto';
 
 export class CircuitDto {
     id: string = '';

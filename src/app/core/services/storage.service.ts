@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Plugins, PluginRegistry } from '@capacitor/core';
-import { CountdownTimer } from 'ngx-countdown';
-import { TimerState, CircuitState } from '../state';
 import { Emitter, Emittable } from '@ngxs-labs/emitter';
-import { CircuitDto } from 'src/app/shared/models';
+import { CircuitState } from '@core/state';
+import { CircuitDto } from '@shared/models';
 
 const { Storage }: PluginRegistry = Plugins;
 
@@ -21,18 +20,6 @@ export class StorageService {
     @Emitter(CircuitState.deleteCircuit)
     private _deleteCircuit: Emittable<CircuitDto>;
 
-    // Emit to these to add/restore/delete timers in state
-    // @Emitter(TimerState.addTimer)
-    // private _addTimer: Emittable<TimerDto>;
-
-    // @Emitter(TimerState.restoreTimers)
-    // private _restoreTimers: Emittable<TimerDto[]>;
-
-    // @Emitter(TimerState.deleteTimer)
-    // private _deleteTimer: Emittable<TimerDto>;
-
-    // Storage keys
-    // private _timerKey: string = 'timerKey';
     private _circuitKey: string = 'circuitKey';
 
     constructor() {}
@@ -45,9 +32,7 @@ export class StorageService {
         console.log('saving circuit to local storage', circuit);
         const existingCircuits = await this._getItem(this._circuitKey);
         if (existingCircuits !== null && existingCircuits.length > 0) {
-            console.log(
-                'circuits already exist, append circuit to local storage'
-            );
+            console.log('circuits already exist, append circuit to local storage');
             existingCircuits.push(circuit);
             await this._storeItem(this._circuitKey, existingCircuits);
         } else {
@@ -76,9 +61,7 @@ export class StorageService {
         }
     }
 
-    /**
-     * Get circuits from local storage and overwrite circuit state.
-     */
+    /** Get circuits from local storage and overwrite circuit state. */
     public async restoreCircuits(): Promise<void> {
         const savedCircuits = await this._getItem(this._circuitKey);
         if (savedCircuits !== null && savedCircuits.length > 0) {
@@ -88,47 +71,6 @@ export class StorageService {
             console.log('no circuits to restore');
         }
     }
-
-    // ~~~~~~~~~~~~~~ TIMERS START HERE ~~~~~~~~~~~~~~
-    // public async saveTimer(timer: any): Promise<void> {
-    //     // Generate and append unique id
-    //     console.log('saving countdown timer to local storage', timer);
-    //     const existingTimers = await this._getItem(this._timerKey);
-    //     if (existingTimers !== null && existingTimers.length > 0) {
-    //         console.log('timers already exist, append timer to local storage');
-    //         existingTimers.push(timer);
-    //         await this._storeItem(this._timerKey, existingTimers);
-    //     } else {
-    //         console.log('no timers, overwrite local storage');
-    //         await this._storeItem(this._timerKey, [timer]);
-    //     }
-
-    //     console.log('save countdown timer to state');
-    //     this._addTimer.emit(timer);
-    // }
-    // public async deleteTimer(timer: TimerDto): Promise<void> {
-    //     const existingTimers = await this._getItem(this._timerKey);
-    //     const index = existingTimers.indexOf(timer);
-    //     if (index) {
-    //         // Remove timer from local storage
-    //         console.log('delete timer', timer.name);
-    //         existingTimers.splice(index);
-    //         console.log('after deletion', existingTimers);
-    //         this._storeItem(this._timerKey, existingTimers);
-
-    //         // Remove timer from state
-    //         this._deleteTimer.emit(timer);
-    //     }
-    // }
-    // public async restoreTimers(): Promise<void> {
-    //     const savedTimers = await this._getItem(this._timerKey);
-    //     if (savedTimers !== null && savedTimers.length > 0) {
-    //         console.log('restore timers', savedTimers);
-    //         this._restoreTimers.emit(await this._getItem(this._timerKey));
-    //     } else {
-    //         console.log('no timers to restore');
-    //     }
-    // }
 
     /**
      * JSON stringifies and stores key value pair in local storage.

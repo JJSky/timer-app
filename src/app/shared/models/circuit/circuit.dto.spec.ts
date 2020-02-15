@@ -1,4 +1,4 @@
-import { CircuitDto } from './circuit-dto.model';
+import { CircuitDto } from './circuit.dto';
 
 describe('CircuitDto', () => {
     it('should create an instance', () => {

@@ -1,4 +1,4 @@
-import { TimerDto } from './timer-dto.model';
+import { TimerDto } from './timer.dto';
 
 describe('TimerDto', () => {
     it('should create an instance', () => {

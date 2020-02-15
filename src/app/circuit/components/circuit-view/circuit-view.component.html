@@ -1,13 +1,14 @@
-<h1>Name: {{ circuit.name }}</h1>
-<ion-slides #timers [options]="slideOpts" (ionSlideDidChange)="timerChanged()">
-    <ion-card *ngFor="let timer of circuit.timers">
-        <ion-slide>
-            <h1>{{ timer.name }}</h1>
-        </ion-slide>
-    </ion-card>
-</ion-slides>
-<app-circuit-fabs
-    (play)="play()"
-    (skip)="skip()"
-    (delete)="deleteCircuit()"
-></app-circuit-fabs>
+<h1>{{ circuit.name }}</h1>
+<ion-list>
+    <ion-item *ngFor="let timer of circuit.timers">
+        <div class="timer-wrapper">
+            <span class="name">{{ timer.name }}</span>
+            <span class="countdown">
+                <countdown
+                    [config]="{ leftTime: timer.seconds, demand: true, format: 'm:s.S' }"
+                ></countdown>
+            </span>
+        </div>
+    </ion-item>
+</ion-list>
+<app-circuit-fabs (play)="play()" (skip)="skip()" (delete)="deleteCircuit()"></app-circuit-fabs>

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalService, StorageService } from 'src/app/core/services';
 import { Select } from '@ngxs/store';
-import { CircuitState } from 'src/app/core/state';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { CircuitDto } from 'src/app/shared/models';
+import { take } from 'rxjs/operators';
+import { ModalService, StorageService } from '@core/services';
+import { CircuitState } from '@core/state';
+import { CircuitDto } from '@shared/models';
 
 @Component({
     selector: 'app-circuit-home',
@@ -11,22 +12,14 @@ import { CircuitDto } from 'src/app/shared/models';
     styleUrls: ['./circuit-home.component.scss']
 })
 export class CircuitHomeComponent implements OnInit {
-    /**
-     * Gets circuits observable from state.
-     */
+    /** Gets circuits observable from state. */
     @Select(CircuitState.circuits)
     public circuits$: Observable<CircuitDto[]>;
 
-    /**
-     * Returns whether a timer is playing or not.
-     */
-    public isPlaying$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-        false
-    );
+    /** Returns whether a timer is playing or not. */
+    public isPlaying$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-    /**
-     * Options for ion-slider.
-     */
+    /** Options for ion-slider. */
     public slideOpts: any = {
         initialSlide: 0,
         speed: 400,
@@ -35,13 +28,15 @@ export class CircuitHomeComponent implements OnInit {
         }
     };
 
-    constructor(
-        private _modalService: ModalService,
-        private _storage: StorageService
-    ) {}
+    constructor(private _modalService: ModalService, private _storage: StorageService) {}
 
     ngOnInit(): void {
-        this.createCircuit();
+        // Only automatically open modal if no circuits exist already
+        this.circuits$.pipe(take(1)).subscribe(circuits => {
+            if (!!!circuits) {
+                this.createCircuit();
+            }
+        });
     }
 
     /**

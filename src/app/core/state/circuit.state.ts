@@ -1,7 +1,7 @@
 import { State, StateContext, Selector } from '@ngxs/store';
-import { CircuitDto } from 'src/app/shared/models';
 import { ImmutableContext, ImmutableSelector } from '@ngxs-labs/immer-adapter';
 import { Receiver } from '@ngxs-labs/emitter';
+import { CircuitDto } from '@shared/models';
 
 export interface CircuitStateModel {
     circuits: CircuitDto[];
@@ -16,18 +16,14 @@ export interface CircuitStateModel {
 export class CircuitState {
     constructor() {}
 
-    /**
-     * Returns all circuits from the circuit state.
-     */
+    /** Returns all circuits from the circuit state. */
     @Selector()
     @ImmutableSelector()
     public static circuits(state: CircuitStateModel): CircuitDto[] {
         return state.circuits;
     }
 
-    /**
-     * Add a new circuit to the circuit state.
-     */
+    /** Add a new circuit to the circuit state. */
     @Receiver()
     @ImmutableContext()
     public static addCircuit(
@@ -40,9 +36,7 @@ export class CircuitState {
         });
     }
 
-    /**
-     * Delete circuit from the circuit state.
-     */
+    /** Delete circuit from the circuit state. */
     @Receiver()
     @ImmutableContext()
     public static deleteCircuit(
@@ -56,9 +50,7 @@ export class CircuitState {
         });
     }
 
-    /**
-     * Overwrite all circuits in circuit state.
-     */
+    /** Overwrite all circuits in circuit state. */
     @Receiver()
     @ImmutableContext()
     public static restoreCircuits(

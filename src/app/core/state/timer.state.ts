@@ -1,5 +1,5 @@
 import { State, StateContext, Selector } from '@ngxs/store';
-import { TimerDto } from 'src/app/shared/models';
+import { TimerDto } from '@shared/models';
 import { ImmutableContext, ImmutableSelector } from '@ngxs-labs/immer-adapter';
 import { Receiver } from '@ngxs-labs/emitter';
 

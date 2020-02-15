@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { CircuitDto } from 'src/app/shared/models';
-import { StorageService } from 'src/app/core/services';
+import { CircuitDto } from '@shared/models';
+import { StorageService } from '@core/services';
 import { IonSlides } from '@ionic/angular';
 
 @Component({
@@ -14,9 +14,7 @@ export class CircuitViewComponent implements OnInit {
 
     @ViewChild('timers', { static: false }) timerSlides: IonSlides;
 
-    /**
-     * Options for ion-slider.
-     */
+    /** Options for ion-slider. */
     public slideOpts: any = {
         direction: 'vertical',
         centeredSlides: true,

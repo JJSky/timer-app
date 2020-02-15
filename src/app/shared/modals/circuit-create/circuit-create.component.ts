@@ -1,26 +1,9 @@
-import {
-    Component,
-    OnInit,
-    ViewChild,
-    QueryList,
-    ViewChildren
-} from '@angular/core';
-import {
-    FormGroup,
-    FormBuilder,
-    Validators,
-    FormArray,
-    Form,
-    FormControl
-} from '@angular/forms';
+import { Component, OnInit, ViewChild, QueryList, ViewChildren } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormArray, Form, FormControl } from '@angular/forms';
 import { PickerOptions, PickerColumnOption } from '@ionic/core';
-import {
-    PickerController,
-    ModalController,
-    IonItemSliding
-} from '@ionic/angular';
+import { PickerController, ModalController, IonItemSliding } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
-import { TimerDto, CircuitDto } from '../../models';
+import { TimerDto, CircuitDto } from '@shared/models';
 const uuidv1 = require('uuid/v1');
 
 @Component({
@@ -29,30 +12,18 @@ const uuidv1 = require('uuid/v1');
     styleUrls: ['./circuit-create.component.scss']
 })
 export class CircuitCreateComponent implements OnInit {
-    /**
-     * Get element reference to list of IonItemSliding elements.
-     */
+    /** Get element reference to list of IonItemSliding elements. */
     @ViewChildren('slideable') slidables: QueryList<IonItemSliding>;
 
-    /**
-     * Form for a circuit and the timers within it.
-     */
+    /** Form for a circuit and the timers within it. */
     public circuitForm: FormGroup;
 
-    /**
-     * Array for holding errors from manual form validation.
-     */
-    public errors$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(
-        []
-    );
+    /** Array for holding errors from manual form validation. */
+    public errors$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
-    /**
-     * Validation error messages defined here.
-     */
+    /** Validation error messages defined here. */
     public validationMessages: any = {
-        circuitName: [
-            { type: 'required', message: 'Circuit name is required.' }
-        ],
+        circuitName: [{ type: 'required', message: 'Circuit name is required.' }],
         timer: [{ type: 'min', message: 'An amount of time is required.' }]
     };
 
@@ -104,16 +75,12 @@ export class CircuitCreateComponent implements OnInit {
         return this.circuitForm.get('timers') as FormArray;
     }
 
-    /**
-     * Add timer to timers FormArray.
-     */
+    /** Add timer to timers FormArray. */
     public addTimer(): void {
         this.timersFormArray.push(this.createTimer());
     }
 
-    /**
-     * Returns new formgroup for a timer.
-     */
+    /** Returns new formgroup for a timer. */
     public createTimer(): FormGroup {
         const maxMinutes = 59;
         const maxSeconds = 59;
@@ -192,11 +159,13 @@ export class CircuitCreateComponent implements OnInit {
             ],
             columns: [
                 {
+                    prefix: 'min',
                     name: 'minutes',
                     options: minutesOptions,
                     selectedIndex: timer.get('minutes').value
                 },
                 {
+                    prefix: 'sec',
                     name: 'seconds',
                     options: secondsOptions,
                     selectedIndex: timer.get('seconds').value
@@ -217,9 +186,9 @@ export class CircuitCreateComponent implements OnInit {
         picker.onDidDismiss().then(async data => {
             const minCol = await picker.getColumn('minutes');
             const secCol = await picker.getColumn('seconds');
-
             const milisecondsInMinute = 60000;
             const milisecondsInSecond = 1000;
+
             if (!canceled) {
                 const minutes = minCol.options[minCol.selectedIndex].value;
                 const seconds = secCol.options[secCol.selectedIndex].value;
@@ -227,10 +196,7 @@ export class CircuitCreateComponent implements OnInit {
                 timer.get('seconds').setValue(seconds);
                 timer
                     .get('totalTime')
-                    .setValue(
-                        minutes * milisecondsInMinute +
-                            seconds * milisecondsInSecond
-                    );
+                    .setValue(minutes * milisecondsInMinute + seconds * milisecondsInSecond);
             }
         });
     }
@@ -238,13 +204,7 @@ export class CircuitCreateComponent implements OnInit {
     /**
      * Submit circuit form by dismissing modal with circuit data.
      */
-    public async submitCircuit({
-        valid,
-        value
-    }: {
-        valid: any;
-        value: any;
-    }): Promise<void> {
+    public async submitCircuit({ valid, value }: { valid: any; value: any }): Promise<void> {
         console.log('form value', valid, value);
         if (!valid) {
             return;
