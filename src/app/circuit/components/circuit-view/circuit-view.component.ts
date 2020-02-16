@@ -17,6 +17,7 @@ export class CircuitViewComponent implements OnInit {
         this.circuit$.next(value);
     }
 
+    /** Timer data from circuit. */
     public readonly timers$: Observable<TimerDto[]> = this.circuit$.pipe(
         map(circuit => circuit.timers),
         startWith([])
@@ -26,7 +27,7 @@ export class CircuitViewComponent implements OnInit {
     public isCountingDown$: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public circuitComplete$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-    /** Access to the countdown timers on the page. */
+    /** Access to the countdown timer elements on the page. */
     @ViewChildren('countdownTimer') timers: QueryList<CountdownComponent>;
 
     constructor(
@@ -40,7 +41,7 @@ export class CircuitViewComponent implements OnInit {
     public handleTimer(e: CountdownEvent): void {
         console.log('timer event: ', e);
         if (e.action === 'done') {
-            // When timer complete, increase index and play next timer
+            // When timer completes, increase index and play next timer
             this.isCountingDown$.next(false);
             this.playIndex++;
             this.play();
@@ -54,10 +55,12 @@ export class CircuitViewComponent implements OnInit {
         // If circuit complete when user presses play button, reset timers
         if (this.circuitComplete$.value) {
             this.resetTimers();
+            return;
         }
 
         // Check if circuit is complete
         if (this.playIndex >= curTimers.length) {
+            console.log('complete circuit');
             this.circuitComplete$.next(true);
             return;
         }
@@ -88,6 +91,12 @@ export class CircuitViewComponent implements OnInit {
     /** Reset timers to initial state. */
     public resetTimers(): void {
         console.log('reset timers');
+        const curTimers = this.timers.toArray();
+        curTimers.forEach(timer => {
+            timer.restart();
+        });
+        this.playIndex = 0;
+        this.circuitComplete$.next(false);
     }
 
     /** Delete circuit. */
