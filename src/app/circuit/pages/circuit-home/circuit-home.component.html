@@ -19,13 +19,17 @@
 
 <ion-content>
     <ion-slides
+        #slides
         (ionSlideDidChange)="slideChange($event)"
         pager="true"
         [options]="slideOpts"
         *ngIf="(circuits$ | async)?.length > 0; else noCircuits"
     >
         <ion-slide *ngFor="let circuit of circuits$ | async">
-            <app-circuit-view [circuit]="circuit"></app-circuit-view>
+            <app-circuit-view
+                [circuit]="circuit"
+                (deletedCircuit)="deletedCircuit()"
+            ></app-circuit-view>
         </ion-slide>
     </ion-slides>
     <ng-template #noCircuits>No circuits</ng-template>

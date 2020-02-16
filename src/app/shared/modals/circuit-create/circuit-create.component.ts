@@ -159,13 +159,11 @@ export class CircuitCreateComponent implements OnInit {
             ],
             columns: [
                 {
-                    prefix: 'min',
                     name: 'minutes',
                     options: minutesOptions,
                     selectedIndex: timer.get('minutes').value
                 },
                 {
-                    prefix: 'sec',
                     name: 'seconds',
                     options: secondsOptions,
                     selectedIndex: timer.get('seconds').value

@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, QueryList, ViewChildren } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    QueryList,
+    ViewChildren,
+    Output,
+    EventEmitter
+} from '@angular/core';
 import { CircuitDto, TimerDto } from '@shared/models';
 import { StorageService, ModalService } from '@core/services';
 import { CountdownComponent, CountdownEvent } from 'ngx-countdown';
@@ -23,12 +31,15 @@ export class CircuitViewComponent implements OnInit {
         startWith([])
     );
 
+    /** Access to the countdown timer elements on the page. */
+    @ViewChildren('countdownTimer') timers: QueryList<CountdownComponent>;
+
+    @Output()
+    public deletedCircuit: EventEmitter<any> = new EventEmitter<any>();
+
     public playIndex: number = 0;
     public isCountingDown$: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public circuitComplete$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
-    /** Access to the countdown timer elements on the page. */
-    @ViewChildren('countdownTimer') timers: QueryList<CountdownComponent>;
 
     constructor(
         private readonly _storageService: StorageService,
@@ -79,10 +90,9 @@ export class CircuitViewComponent implements OnInit {
 
     /** Skip to next timer in circuit. */
     public skip(): void {
-        console.log('skip here');
+        console.log('skip current timer');
         const curTimers = this.timers.toArray();
         curTimers[this.playIndex].stop();
-        console.log(curTimers[this.playIndex].event);
         this.isCountingDown$.next(false);
         this.playIndex++;
         this.play();
@@ -106,6 +116,7 @@ export class CircuitViewComponent implements OnInit {
         if (!!res.data && res.data === true) {
             console.log('delete circuit', res.data);
             this._storageService.deleteCircuit(this.circuit$.value);
+            this.deletedCircuit.emit();
         }
     }
 }

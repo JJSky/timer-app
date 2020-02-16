@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Select } from '@ngxs/store';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { ModalService, StorageService } from '@core/services';
 import { CircuitState } from '@core/state';
 import { CircuitDto } from '@shared/models';
+import { IonSlides } from '@ionic/angular';
 
 @Component({
     selector: 'app-circuit-home',
@@ -16,9 +17,6 @@ export class CircuitHomeComponent implements OnInit {
     @Select(CircuitState.circuits)
     public circuits$: Observable<CircuitDto[]>;
 
-    /** Returns whether a timer is playing or not. */
-    public isPlaying$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
     /** Options for ion-slider. */
     public slideOpts: any = {
         initialSlide: 0,
@@ -27,6 +25,12 @@ export class CircuitHomeComponent implements OnInit {
             return '<span class="' + className + '">' + (index + 1) + '</span>';
         }
     };
+
+    /** Access to IonSlides component. */
+    private _slides: IonSlides;
+    @ViewChild('slides', { static: false }) set slides(elRef: IonSlides) {
+        this._slides = elRef;
+    }
 
     constructor(private _modalService: ModalService, private _storage: StorageService) {}
 
@@ -49,14 +53,19 @@ export class CircuitHomeComponent implements OnInit {
         if (!!res.data) {
             console.log('create timer', res.data);
             await this._storage.saveCircuit(res.data);
+            const numSlides = await this._slides.length();
+            this._slides.slideTo(numSlides);
         }
     }
 
-    /**
-     * Run whenever the ion-slider changes slides.
-     */
+    /** Run whenever the ion-slider changes slides. */
     public slideChange(event: any): void {
         console.log('change slide', event);
-        this.isPlaying$.next(false);
+    }
+
+    /** Animate to previous slide after circuit deletion. */
+    public async deletedCircuit(): Promise<void> {
+        this._slides.slidePrev();
+        await this._slides.update();
     }
 }
