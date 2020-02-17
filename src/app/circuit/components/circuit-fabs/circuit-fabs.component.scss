@@ -1,5 +1,5 @@
 :host {
-    ion-fab {
+    ion-fab.main {
         display: flex;
         transform: translateX(-50%);
         margin: auto;
@@ -12,6 +12,10 @@
                 --color: #000000;
                 --color-activated: #000000;
                 --box-shadow: none;
+
+                &.vertical {
+                    margin-top: -100px;
+                }
             }
             &.play {
                 margin: 0 15px;
