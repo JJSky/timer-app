@@ -1,28 +1,37 @@
 :host {
-    ion-fab.main {
-        display: flex;
-        transform: translateX(-50%);
-        margin: auto;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
 
-        ion-fab-button {
-            &.secondary {
-                --background: transparent;
-                --background-activated: transparent;
-                --ripple-color: orange;
-                --color: #000000;
-                --color-activated: #000000;
-                --box-shadow: none;
+    & > ion-fab {
+        &:first-of-type {
+            left: -30px;
+        }
+        &:last-of-type {
+            transform: translateX(73px);
+            top: 0;
+        }
+    }
 
-                &.vertical {
-                    margin-top: -100px;
-                }
+    ion-fab-button {
+        &.secondary {
+            --background: transparent;
+            --background-activated: transparent;
+            --ripple-color: orange;
+            --color: #000000;
+            --color-activated: #000000;
+            --box-shadow: none;
+
+            &.vertical {
+                margin-top: -50px;
             }
-            &.play {
-                margin: 0 15px;
-            }
-            ion-icon {
-                font-size: 24px;
-            }
+        }
+        &.play {
+            margin: 0 15px;
+        }
+        ion-icon {
+            font-size: 24px;
         }
     }
 }
