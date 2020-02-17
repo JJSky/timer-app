@@ -10,10 +10,12 @@
             <ion-icon name="arrow-up"></ion-icon>
         </ion-fab-button>
         <ion-fab-list side="top">
-            <ion-fab-button><ion-icon name="logo-vimeo"></ion-icon></ion-fab-button>
-            <ion-fab-button><ion-icon name="logo-facebook"></ion-icon></ion-fab-button>
-            <ion-fab-button><ion-icon name="logo-instagram"></ion-icon></ion-fab-button>
-            <ion-fab-button><ion-icon name="logo-twitter"></ion-icon></ion-fab-button>
+            <ion-fab-button class="secondary">
+                <ion-icon name="create"></ion-icon> <ion-ripple-effect></ion-ripple-effect>
+            </ion-fab-button>
+            <ion-fab-button class="secondary">
+                <ion-icon name="refresh"></ion-icon> <ion-ripple-effect></ion-ripple-effect>
+            </ion-fab-button>
         </ion-fab-list>
     </ion-fab>
     <ion-fab-button color="primary" class="play" (click)="play.emit()">
