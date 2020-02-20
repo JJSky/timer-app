@@ -35,6 +35,8 @@ export class CircuitViewComponent implements OnInit {
     @ViewChildren('countdownTimer') timers: QueryList<CountdownComponent>;
 
     @Output()
+    public editCircuit: EventEmitter<CircuitDto> = new EventEmitter<CircuitDto>();
+    @Output()
     public deletedCircuit: EventEmitter<any> = new EventEmitter<any>();
 
     public playIndex: number = 0;
@@ -62,12 +64,6 @@ export class CircuitViewComponent implements OnInit {
     /** Play or pause timers based on status. */
     public play(): void {
         const curTimers = this.timers.toArray();
-
-        // If circuit complete when user presses play button, reset timers
-        if (this.circuitComplete$.value) {
-            this.resetTimers();
-            return;
-        }
 
         // Check if circuit is complete
         if (this.playIndex >= curTimers.length) {
@@ -106,6 +102,7 @@ export class CircuitViewComponent implements OnInit {
             timer.restart();
         });
         this.playIndex = 0;
+        this.isCountingDown$.next(false);
         this.circuitComplete$.next(false);
     }
 

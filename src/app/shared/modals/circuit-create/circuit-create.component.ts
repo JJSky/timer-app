@@ -1,17 +1,22 @@
-import { Component, OnInit, ViewChild, QueryList, ViewChildren } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray, Form, FormControl } from '@angular/forms';
+import { Component, OnInit, QueryList, ViewChildren, Input } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
 import { PickerOptions, PickerColumnOption } from '@ionic/core';
 import { PickerController, ModalController, IonItemSliding } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
 import { TimerDto, CircuitDto } from '@shared/models';
 const uuidv1 = require('uuid/v1');
 
+const maxMinutes = 59;
+const maxSeconds = 59;
 @Component({
     selector: 'app-circuit-create',
     templateUrl: './circuit-create.component.html',
     styleUrls: ['./circuit-create.component.scss']
 })
 export class CircuitCreateComponent implements OnInit {
+    /** Existing circuit (if editing). */
+    @Input() circuit: CircuitDto;
+
     /** Get element reference to list of IonItemSliding elements. */
     @ViewChildren('slideable') slidables: QueryList<IonItemSliding>;
 
@@ -34,11 +39,22 @@ export class CircuitCreateComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        // Initialize circuit form
         this.circuitForm = this._fb.group({
-            circuitName: ['', [Validators.required]],
-            timers: this._fb.array([this.createTimer()])
+            circuitName: [this.circuit ? this.circuit.name : '', [Validators.required]],
+            timers: this._fb.array([])
         });
-        this.peekSlideItem();
+
+        // If editing, populate timers
+        if (!!this.circuit) {
+            for (const timer of this.circuit.timers) {
+                this.addTimer(timer);
+            }
+        } else {
+            this.addTimer();
+            // Show user there are hidden slide options
+            this.peekSlideItem();
+        }
     }
 
     /**
@@ -68,27 +84,26 @@ export class CircuitCreateComponent implements OnInit {
     }
 
     // ~~~~~~~~~~~~~~~~~~ Form array stuff starts here ~~~~~~~~~~~~~~~~~~
-    /**
-     * Get reference to timers FormArray from circuitForm.
-     */
+    /** Get reference to timers FormArray from circuitForm. */
     public get timersFormArray(): FormArray {
         return this.circuitForm.get('timers') as FormArray;
     }
 
     /** Add timer to timers FormArray. */
-    public addTimer(): void {
-        this.timersFormArray.push(this.createTimer());
+    public addTimer(timer?: TimerDto): void {
+        this.timersFormArray.push(this.createTimer(timer));
     }
 
     /** Returns new formgroup for a timer. */
-    public createTimer(): FormGroup {
-        const maxMinutes = 59;
-        const maxSeconds = 59;
+    public createTimer(timer?: TimerDto): FormGroup {
         return this._fb.group({
-            name: '',
-            minutes: [0, [Validators.min(0), Validators.max(maxMinutes)]],
-            seconds: [0, [Validators.min(0), Validators.max(maxSeconds)]],
-            totalTime: [0, [Validators.required, Validators.min(1)]]
+            name: timer ? timer.name : '',
+            minutes: [timer ? timer.minutes : 0, [Validators.min(0), Validators.max(maxMinutes)]],
+            seconds: [
+                timer ? timer.seconds : 0,
+                [Validators.min(timer ? timer.minutes : 0), Validators.max(maxSeconds)]
+            ],
+            totalTime: [timer ? timer.totalTime : 0, [Validators.required, Validators.min(1)]]
         });
     }
 
@@ -202,45 +217,50 @@ export class CircuitCreateComponent implements OnInit {
     /**
      * Submit circuit form by dismissing modal with circuit data.
      */
-    public async submitCircuit({ valid, value }: { valid: any; value: any }): Promise<void> {
+    public async submitCircuit({
+        valid,
+        value
+    }: {
+        valid: boolean;
+        value: { circuitName: string; timers: TimerDto[] };
+    }): Promise<void> {
         console.log('form value', valid, value);
-        if (!valid) {
+        // Manual validation (hopefully don't need)
+        const errArray = [];
+        for (const t of value.timers) {
+            if (t.totalTime <= 0) {
+                errArray.push('Timer cannot have no time');
+            }
+        }
+        this.errors$.next(errArray);
+        if (errArray.length || !valid) {
+            console.log('there are errors, stop submission', errArray);
             return;
         }
 
         const newCircuit = new CircuitDto({
+            id: this.circuit ? this.circuit.id : uuidv1(),
             name: value.circuitName,
             timers: []
         });
 
-        // If no name filled in for any timers, generate name
-        value.timers.forEach((timer, index) => {
-            if (!timer.name) {
+        for (const [index, timer] of value.timers.entries()) {
+            console.log('timer from form: ', timer, index);
+
+            // If no name filled in for timer, generate name
+            if (!!!timer.name) {
                 timer.name = value.circuitName + ' Timer #' + (index + 1);
             }
 
             const newTimer = new TimerDto({
-                id: uuidv1(),
+                id: this.circuit.timers[index] ? this.circuit.timers[index].id : uuidv1(),
                 name: timer.name,
                 minutes: timer.minutes,
                 seconds: timer.seconds,
                 totalTime: timer.totalTime
             });
             newCircuit.timers.push(newTimer);
-        });
-
-        // Manual validation (hopefully don't need)
-        // const errArray = [];
-        // value.timers.forEach(timer => {
-        //     if (timer.minutes <= 0 || timer.seconds <= 0) {
-        //         errArray.push('Timer cannot have no time');
-        //     }
-        // });
-        // this.errors$.next(errArray);
-        // if (errArray.length) {
-        //     console.log('there are errors, stop submission', errArray);
-        //     return;
-        // }
+        }
 
         console.log(newCircuit);
         this.dismiss(newCircuit);

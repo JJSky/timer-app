@@ -10,9 +10,12 @@ const { Storage }: PluginRegistry = Plugins;
     providedIn: 'root'
 })
 export class StorageService {
-    // Emit to these to add/restore/delete circuits in state
+    // Emit to these to add/update/restore/delete circuits in state
     @Emitter(CircuitState.addCircuit)
     private _addCircuit: Emittable<CircuitDto>;
+
+    @Emitter(CircuitState.updateCircuit)
+    private _updateCircuit: Emittable<CircuitDto>;
 
     @Emitter(CircuitState.restoreCircuits)
     private _restoreCircuits: Emittable<CircuitDto[]>;
@@ -41,6 +44,20 @@ export class StorageService {
         }
         console.log('save circuit to state');
         this._addCircuit.emit(circuit);
+    }
+
+    /**
+     * Update circuit in local storage and circuit state.
+     * @param circuit Circuit to update in local storage & state.
+     */
+    public async updateCircuit(circuit: CircuitDto): Promise<void> {
+        console.log('saving edited circuit to local storage', circuit);
+        const existingCircuits = await this._getItem(this._circuitKey);
+        const indexToUpdate = existingCircuits.findIndex(c => c.id === circuit.id);
+        existingCircuits[indexToUpdate] = circuit;
+        await this._storeItem(this._circuitKey, existingCircuits);
+        console.log('save edited circuit to state');
+        this._updateCircuit.emit(circuit);
     }
 
     /**

@@ -28,6 +28,7 @@
         <ion-slide *ngFor="let circuit of circuits$ | async">
             <app-circuit-view
                 [circuit]="circuit"
+                (editCircuit)="editCircuit($event)"
                 (deletedCircuit)="deletedCircuit()"
             ></app-circuit-view>
         </ion-slide>

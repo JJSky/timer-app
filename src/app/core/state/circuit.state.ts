@@ -36,6 +36,20 @@ export class CircuitState {
         });
     }
 
+    /** Update existing circuit in state. */
+    @Receiver()
+    @ImmutableContext()
+    public static updateCircuit(
+        { setState }: StateContext<CircuitStateModel>,
+        { payload }: { payload: CircuitDto }
+    ): void {
+        setState((state: CircuitStateModel) => {
+            const index = state.circuits.findIndex(c => c.id === payload.id);
+            state.circuits[index] = payload;
+            return state;
+        });
+    }
+
     /** Delete circuit from the circuit state. */
     @Receiver()
     @ImmutableContext()
@@ -44,7 +58,7 @@ export class CircuitState {
         { payload }: { payload: CircuitDto }
     ): void {
         setState((state: CircuitStateModel) => {
-            const index = state.circuits.indexOf(payload);
+            const index = state.circuits.findIndex(c => c.id === payload.id);
             state.circuits.splice(index);
             return state;
         });

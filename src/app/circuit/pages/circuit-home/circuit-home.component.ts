@@ -51,10 +51,22 @@ export class CircuitHomeComponent implements OnInit {
         const modal = await this._modalService.openCreateCircuitModal();
         const res = await modal.onDidDismiss();
         if (!!res.data) {
-            console.log('create timer', res.data);
+            console.log('create circuit', res.data);
             await this._storage.saveCircuit(res.data);
-            const numSlides = await this._slides.length();
-            this._slides.slideTo(numSlides);
+            if (!!(await this._slides.length())) {
+                const numSlides = await this._slides.length();
+                this._slides.slideTo(numSlides);
+            }
+        }
+    }
+
+    /** Edit circuit. */
+    public async editCircuit(circuit: CircuitDto): Promise<void> {
+        const alert = await this._modalService.openCreateCircuitModal(circuit);
+        const res = await alert.onDidDismiss();
+        if (!!res.data) {
+            console.log('save edits to circuit', res.data);
+            this._storage.updateCircuit(res.data);
         }
     }
 

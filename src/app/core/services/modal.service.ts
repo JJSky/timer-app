@@ -9,10 +9,13 @@ import { CircuitDto } from '@shared/models';
 export class ModalService {
     constructor(private _modalCtrl: ModalController, private _alertCtrl: AlertController) {}
 
-    /** Open modal for creating a circuit. */
-    public async openCreateCircuitModal(): Promise<HTMLIonModalElement> {
+    /** Open modal for creating/editing a circuit. */
+    public async openCreateCircuitModal(circuitToEdit?: CircuitDto): Promise<HTMLIonModalElement> {
         const modal = await this._modalCtrl.create({
-            component: CircuitCreateComponent
+            component: CircuitCreateComponent,
+            componentProps: {
+                circuit: circuitToEdit
+            }
         });
         await modal.present();
         return modal;

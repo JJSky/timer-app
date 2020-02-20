@@ -1,29 +1,33 @@
-<h1>{{ (circuit$ | async).name }}</h1>
-<ion-list>
-    <ion-item
-        *ngFor="let timer of timers$ | async"
-        [disabled]="countdownTimer.left === 0 || countdownTimer.event.isStopped"
-    >
-        <div class="timer-wrapper">
-            <span class="name">{{ timer.name }}</span>
-            <span class="countdown">
-                <countdown
-                    #countdownTimer
-                    [config]="{
-                        leftTime: timer.seconds + timer.minutes * 60,
-                        demand: true,
-                        format: 'mm:ss.S'
-                    }"
-                    (event)="handleTimer($event)"
-                ></countdown>
-            </span>
-        </div>
-    </ion-item>
-</ion-list>
-<app-circuit-fabs
-    [circuitComplete]="circuitComplete$ | async"
-    [isCountingDown]="isCountingDown$ | async"
-    (play)="play()"
-    (skip)="skip()"
-    (delete)="deleteCircuit()"
-></app-circuit-fabs>
+<ng-container *ngIf="circuit$ | async as circuit">
+    <h1>{{ circuit.name }}</h1>
+    <ion-list>
+        <ion-item
+            *ngFor="let timer of timers$ | async"
+            [disabled]="countdownTimer.left === 0 || countdownTimer.event.isStopped"
+        >
+            <div class="timer-wrapper">
+                <span class="name">{{ timer.name }}</span>
+                <span class="countdown">
+                    <countdown
+                        #countdownTimer
+                        [config]="{
+                            leftTime: timer.seconds + timer.minutes * 60,
+                            demand: true,
+                            format: 'mm:ss.S'
+                        }"
+                        (event)="handleTimer($event)"
+                    ></countdown>
+                </span>
+            </div>
+        </ion-item>
+    </ion-list>
+    <app-circuit-fabs
+        [circuitComplete]="circuitComplete$ | async"
+        [isCountingDown]="isCountingDown$ | async"
+        (play)="play()"
+        (skip)="skip()"
+        (delete)="deleteCircuit()"
+        (reset)="resetTimers()"
+        (edit)="editCircuit.emit(circuit)"
+    ></app-circuit-fabs>
+</ng-container>
