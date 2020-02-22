@@ -11,7 +11,7 @@ import { CircuitDto, TimerDto } from '@shared/models';
 import { StorageService, ModalService } from '@core/services';
 import { CountdownComponent, CountdownEvent } from 'ngx-countdown';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { take, map, startWith } from 'rxjs/operators';
+import { take, map, startWith, tap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-circuit-view',
@@ -28,6 +28,7 @@ export class CircuitViewComponent implements OnInit {
     /** Timer data from circuit. */
     public readonly timers$: Observable<TimerDto[]> = this.circuit$.pipe(
         map(circuit => circuit.timers),
+        tap(_ => this.resetTimers()),
         startWith([])
     );
 
@@ -97,13 +98,15 @@ export class CircuitViewComponent implements OnInit {
     /** Reset timers to initial state. */
     public resetTimers(): void {
         console.log('reset timers');
-        const curTimers = this.timers.toArray();
-        curTimers.forEach(timer => {
-            timer.restart();
-        });
-        this.playIndex = 0;
-        this.isCountingDown$.next(false);
-        this.circuitComplete$.next(false);
+        if (!!this.timers && this.timers.length > 0) {
+            const curTimers = this.timers.toArray();
+            curTimers.forEach(timer => {
+                timer.restart();
+            });
+            this.playIndex = 0;
+            this.isCountingDown$.next(false);
+            this.circuitComplete$.next(false);
+        }
     }
 
     /** Delete circuit. */

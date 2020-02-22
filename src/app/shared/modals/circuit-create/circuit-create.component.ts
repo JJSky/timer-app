@@ -1,5 +1,12 @@
 import { Component, OnInit, QueryList, ViewChildren, Input } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray, FormControl } from '@angular/forms';
+import {
+    FormGroup,
+    FormBuilder,
+    Validators,
+    FormArray,
+    FormControl,
+    ValidationErrors
+} from '@angular/forms';
 import { PickerOptions, PickerColumnOption } from '@ionic/core';
 import { PickerController, ModalController, IonItemSliding } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
@@ -235,6 +242,19 @@ export class CircuitCreateComponent implements OnInit {
         this.errors$.next(errArray);
         if (errArray.length || !valid) {
             console.log('there are errors, stop submission', errArray);
+
+            Object.keys(this.circuitForm.controls).forEach(key => {
+                const controlErrors: ValidationErrors = this.circuitForm.get(key).errors;
+                if (controlErrors != null) {
+                    Object.keys(controlErrors).forEach(keyError => {
+                        console.log(
+                            'Key control: ' + key + ', keyError: ' + keyError + ', err value: ',
+                            controlErrors[keyError]
+                        );
+                    });
+                }
+            });
+
             return;
         }
 
@@ -244,22 +264,28 @@ export class CircuitCreateComponent implements OnInit {
             timers: []
         });
 
-        for (const [index, timer] of value.timers.entries()) {
-            console.log('timer from form: ', timer, index);
+        let timerIndex = 0;
+        for (const timer of value.timers) {
+            console.log('timer from form: ', timer, timerIndex);
 
             // If no name filled in for timer, generate name
             if (!!!timer.name) {
-                timer.name = value.circuitName + ' Timer #' + (index + 1);
+                timer.name = value.circuitName + ' Timer #' + (timerIndex + 1);
             }
 
             const newTimer = new TimerDto({
-                id: this.circuit.timers[index] ? this.circuit.timers[index].id : uuidv1(),
+                id: this.circuit
+                    ? this.circuit.timers[timerIndex]
+                        ? this.circuit.timers[timerIndex].id
+                        : uuidv1()
+                    : uuidv1(),
                 name: timer.name,
                 minutes: timer.minutes,
                 seconds: timer.seconds,
                 totalTime: timer.totalTime
             });
             newCircuit.timers.push(newTimer);
+            timerIndex++;
         }
 
         console.log(newCircuit);
