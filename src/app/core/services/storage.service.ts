@@ -7,7 +7,7 @@ import { CircuitDto } from '@shared/models';
 const { Storage }: PluginRegistry = Plugins;
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class StorageService {
     // Emit to these to add/update/restore/delete circuits in state
@@ -21,7 +21,7 @@ export class StorageService {
     private _restoreCircuits: Emittable<CircuitDto[]>;
 
     @Emitter(CircuitState.deleteCircuit)
-    private _deleteCircuit: Emittable<CircuitDto>;
+    private _deleteCircuit: Emittable<string>;
 
     private _circuitKey: string = 'circuitKey';
 
@@ -53,9 +53,10 @@ export class StorageService {
     public async updateCircuit(circuit: CircuitDto): Promise<void> {
         console.log('saving edited circuit to local storage', circuit);
         const existingCircuits = await this._getItem(this._circuitKey);
-        const indexToUpdate = existingCircuits.findIndex(c => c.id === circuit.id);
+        const indexToUpdate = existingCircuits.findIndex((c: CircuitDto) => c.id === circuit.id);
         existingCircuits[indexToUpdate] = circuit;
         await this._storeItem(this._circuitKey, existingCircuits);
+
         console.log('save edited circuit to state');
         this._updateCircuit.emit(circuit);
     }
@@ -64,17 +65,18 @@ export class StorageService {
      * Deletes a circuit from local storage and circuit state.
      * @param circuit Circuit to delete from local storage & state.
      */
-    public async deleteCircuit(circuit: CircuitDto): Promise<void> {
+    public async deleteCircuit(circuitId: string): Promise<void> {
         const existingCircuits = await this._getItem(this._circuitKey);
-        const index = existingCircuits.indexOf(circuit);
+        const index = existingCircuits.findIndex((c: CircuitDto) => c.id === circuitId);
+
         if (index) {
             // Remove circuit from local storage
-            console.log('delete circuit', circuit.name);
+            console.log('delete circuit', circuitId);
             existingCircuits.splice(index);
-            this._storeItem(this._circuitKey, existingCircuits);
+            await this._storeItem(this._circuitKey, existingCircuits);
 
             // Remove circuit from state
-            this._deleteCircuit.emit(circuit);
+            this._deleteCircuit.emit(circuitId);
         }
     }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Select } from '@ngxs/store';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { take, tap } from 'rxjs/operators';
 import { ModalService, StorageService } from '@core/services';
 import { CircuitState } from '@core/state';
 import { CircuitDto } from '@shared/models';
@@ -10,23 +10,29 @@ import { IonSlides } from '@ionic/angular';
 @Component({
     selector: 'app-circuit-home',
     templateUrl: './circuit-home.component.html',
-    styleUrls: ['./circuit-home.component.scss']
+    styleUrls: ['./circuit-home.component.scss'],
 })
 export class CircuitHomeComponent implements OnInit {
-    /** Gets circuits observable from state. */
+    /**
+     * Get circuits observable from state.
+     */
     @Select(CircuitState.circuits)
     public circuits$: Observable<CircuitDto[]>;
 
-    /** Options for ion-slider. */
+    /**
+     * Options for ion-slider.
+     */
     public slideOpts: any = {
         initialSlide: 0,
         speed: 400,
         renderBullet: (index, className): string => {
             return '<span class="' + className + '">' + (index + 1) + '</span>';
-        }
+        },
     };
 
-    /** Access to IonSlides component. */
+    /**
+     * Access to IonSlides component.
+     */
     private _slides: IonSlides;
     @ViewChild('slides', { static: false }) set slides(elRef: IonSlides) {
         this._slides = elRef;
@@ -36,11 +42,18 @@ export class CircuitHomeComponent implements OnInit {
 
     ngOnInit(): void {
         // Only automatically open modal if no circuits exist already
-        this.circuits$.pipe(take(1)).subscribe(circuits => {
+        this.circuits$.pipe(take(1)).subscribe((circuits) => {
             if (!!!circuits) {
                 this.createCircuit();
             }
         });
+    }
+
+    public circuitTrackBy(index: number, item: CircuitDto): string {
+        if (!item) {
+            return null;
+        }
+        return item.id;
     }
 
     /**
@@ -60,7 +73,9 @@ export class CircuitHomeComponent implements OnInit {
         }
     }
 
-    /** Edit circuit. */
+    /**
+     * Edit circuit.
+     */
     public async editCircuit(circuit: CircuitDto): Promise<void> {
         const alert = await this._modalService.openCreateCircuitModal(circuit);
         const res = await alert.onDidDismiss();
@@ -70,13 +85,23 @@ export class CircuitHomeComponent implements OnInit {
         }
     }
 
-    /** Run whenever the ion-slider changes slides. */
+    /**
+     * Run whenever the ion-slider changes slides.
+     */
     public slideChange(event: any): void {
         console.log('change slide', event);
     }
 
-    /** Animate to previous slide after circuit deletion. */
-    public async deletedCircuit(): Promise<void> {
+    /**
+     * Animate to previous slide after circuit deletion.
+     */
+    public async deleteCircuit(): Promise<void> {
+        // of(this._slides.slidePrev())
+        //     .pipe(
+        //         take(1),
+        //         tap((_) => this._slides.update())
+        //     )
+        //     .subscribe();
         this._slides.slidePrev();
         await this._slides.update();
     }

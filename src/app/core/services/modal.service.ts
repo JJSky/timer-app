@@ -4,7 +4,7 @@ import { CircuitCreateComponent } from '../../shared/modals/circuit-create/circu
 import { CircuitDto } from '@shared/models';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ModalService {
     constructor(private _modalCtrl: ModalController, private _alertCtrl: AlertController) {}
@@ -14,8 +14,8 @@ export class ModalService {
         const modal = await this._modalCtrl.create({
             component: CircuitCreateComponent,
             componentProps: {
-                circuit: circuitToEdit
-            }
+                circuit: circuitToEdit,
+            },
         });
         await modal.present();
         return modal;
@@ -31,18 +31,18 @@ export class ModalService {
                     text: 'Cancel',
                     role: 'cancel',
                     handler: () => {
-                        alert.dismiss(false);
+                        alert.dismiss();
                         return false;
-                    }
+                    },
                 },
                 {
                     text: 'Delete',
                     handler: () => {
-                        alert.dismiss(true);
+                        alert.dismiss(circuit.id);
                         return false;
-                    }
-                }
-            ]
+                    },
+                },
+            ],
         });
         await alert.present();
         return alert;

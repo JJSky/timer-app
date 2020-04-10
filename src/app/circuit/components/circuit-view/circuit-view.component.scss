@@ -1,7 +1,11 @@
 :host {
     height: calc(100% - 150px);
-    margin: 50px 0 100px;
     width: 100%;
+
+    .spacer {
+        height: 10vh;
+        max-height: 50px;
+    }
 
     ion-item {
         .timer-wrapper {

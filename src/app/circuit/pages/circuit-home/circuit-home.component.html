@@ -25,13 +25,17 @@
         [options]="slideOpts"
         *ngIf="(circuits$ | async)?.length > 0; else noCircuits"
     >
-        <ion-slide *ngFor="let circuit of circuits$ | async">
+        <ion-slide *ngFor="let circuit of circuits$ | async; trackBy: circuitTrackBy">
             <app-circuit-view
                 [circuit]="circuit"
                 (editCircuit)="editCircuit($event)"
-                (deletedCircuit)="deletedCircuit()"
+                (deleteCircuit)="deleteCircuit()"
             ></app-circuit-view>
         </ion-slide>
     </ion-slides>
-    <ng-template #noCircuits>No circuits</ng-template>
+    <ng-template #noCircuits>
+        <div class="no-circuits">
+            <p>No circuits</p>
+        </div>
+    </ng-template>
 </ion-content>

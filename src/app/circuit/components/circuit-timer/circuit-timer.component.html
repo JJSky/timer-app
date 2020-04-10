@@ -1,0 +1,14 @@
+<div class="timer-wrapper" *ngIf="timer">
+    <span class="name">{{ timer.name }}</span>
+    <span class="countdown">
+        <countdown
+            #countdownTimer
+            [config]="{
+                leftTime: timer.seconds + timer.minutes * 60,
+                demand: true,
+                format: 'mm:ss.S'
+            }"
+            (event)="handleTimer($event)"
+        ></countdown>
+    </span>
+</div>

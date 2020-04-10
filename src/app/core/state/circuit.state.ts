@@ -10,8 +10,8 @@ export interface CircuitStateModel {
 @State<CircuitStateModel>({
     name: 'circuit',
     defaults: {
-        circuits: []
-    }
+        circuits: [],
+    },
 })
 export class CircuitState {
     constructor() {}
@@ -44,7 +44,7 @@ export class CircuitState {
         { payload }: { payload: CircuitDto }
     ): void {
         setState((state: CircuitStateModel) => {
-            const index = state.circuits.findIndex(c => c.id === payload.id);
+            const index = state.circuits.findIndex((c) => c.id === payload.id);
             state.circuits[index] = payload;
             return state;
         });
@@ -55,10 +55,10 @@ export class CircuitState {
     @ImmutableContext()
     public static deleteCircuit(
         { setState }: StateContext<CircuitStateModel>,
-        { payload }: { payload: CircuitDto }
+        { payload }: { payload: string }
     ): void {
         setState((state: CircuitStateModel) => {
-            const index = state.circuits.findIndex(c => c.id === payload.id);
+            const index = state.circuits.findIndex((c) => c.id === payload);
             state.circuits.splice(index);
             return state;
         });

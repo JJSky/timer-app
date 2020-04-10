@@ -7,14 +7,10 @@ import { SharedModule } from '../shared/shared.module';
 import { CountdownModule } from 'ngx-countdown';
 
 import { CircuitHomeComponent } from './pages';
-import { CircuitViewComponent, CircuitFabsComponent } from './components';
+import { components } from './components';
 
 @NgModule({
-    declarations: [
-        CircuitHomeComponent,
-        CircuitViewComponent,
-        CircuitFabsComponent
-    ],
+    declarations: [CircuitHomeComponent, components],
     imports: [
         CommonModule,
         IonicModule,
@@ -24,14 +20,14 @@ import { CircuitViewComponent, CircuitFabsComponent } from './components';
         RouterModule.forChild([
             {
                 path: '',
-                component: CircuitHomeComponent
+                component: CircuitHomeComponent,
             },
             {
                 path: '**',
                 pathMatch: 'full',
-                redirectTo: '/home'
-            }
-        ])
-    ]
+                redirectTo: '/home',
+            },
+        ]),
+    ],
 })
 export class CircuitModule {}

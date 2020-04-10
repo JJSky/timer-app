@@ -1,16 +1,18 @@
-:host {
-    ion-slides {
-        height: 100%;
-        position: relative;
-        padding-bottom: 20px;
+ion-slides {
+    height: 100%;
+    position: relative;
 
-        --bullet-background: var(--ion-color-tertiary);
-        --bullet-background-active: var(--ion-color-primary);
+    --bullet-background: var(--ion-color-tertiary);
+    --bullet-background-active: var(--ion-color-primary);
 
-        ::ng-deep .swiper-pagination {
+    ::ng-deep {
+        .swiper-pagination {
             top: 0;
             padding: 5px 0;
             background: var(--ion-color-light);
+        }
+        ion-slide {
+            align-items: flex-start;
         }
     }
 }

@@ -5,18 +5,18 @@ import {
     QueryList,
     ViewChildren,
     Output,
-    EventEmitter
+    EventEmitter,
 } from '@angular/core';
 import { CircuitDto, TimerDto } from '@shared/models';
 import { StorageService, ModalService } from '@core/services';
 import { CountdownComponent, CountdownEvent } from 'ngx-countdown';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { take, map, startWith, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, merge, Subject, from, forkJoin } from 'rxjs';
+import { take, map, startWith, tap, switchMap, filter } from 'rxjs/operators';
 
 @Component({
     selector: 'app-circuit-view',
     templateUrl: './circuit-view.component.html',
-    styleUrls: ['./circuit-view.component.scss']
+    styleUrls: ['./circuit-view.component.scss'],
 })
 export class CircuitViewComponent implements OnInit {
     public circuit$: BehaviorSubject<CircuitDto> = new BehaviorSubject(null);
@@ -25,24 +25,29 @@ export class CircuitViewComponent implements OnInit {
         this.circuit$.next(value);
     }
 
-    /** Timer data from circuit. */
+    /**
+     * Timer data from circuit.
+     */
     public readonly timers$: Observable<TimerDto[]> = this.circuit$.pipe(
-        map(circuit => circuit.timers),
-        tap(_ => this.resetTimers()),
+        map((circuit) => circuit.timers),
+        tap((_) => this.resetTimers()),
         startWith([])
     );
 
-    /** Access to the countdown timer elements on the page. */
+    /**
+     * Access to the countdown timer elements on the page.
+     */
     @ViewChildren('countdownTimer') timers: QueryList<CountdownComponent>;
 
     @Output()
     public editCircuit: EventEmitter<CircuitDto> = new EventEmitter<CircuitDto>();
     @Output()
-    public deletedCircuit: EventEmitter<any> = new EventEmitter<any>();
+    public deleteCircuit: EventEmitter<any> = new EventEmitter<any>();
 
     public playIndex: number = 0;
     public isCountingDown$: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public circuitComplete$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    public play$: Subject<void> = new Subject();
 
     constructor(
         private readonly _storageService: StorageService,
@@ -64,6 +69,9 @@ export class CircuitViewComponent implements OnInit {
 
     /** Play or pause timers based on status. */
     public play(): void {
+        // First steps to handling playing within timers themselves
+        this.play$.next();
+
         const curTimers = this.timers.toArray();
 
         // Check if circuit is complete
@@ -100,7 +108,7 @@ export class CircuitViewComponent implements OnInit {
         console.log('reset timers');
         if (!!this.timers && this.timers.length > 0) {
             const curTimers = this.timers.toArray();
-            curTimers.forEach(timer => {
+            curTimers.forEach((timer) => {
                 timer.restart();
             });
             this.playIndex = 0;
@@ -110,13 +118,23 @@ export class CircuitViewComponent implements OnInit {
     }
 
     /** Delete circuit. */
-    public async deleteCircuit(): Promise<void> {
-        const alert = await this._modalService.confirmCircuitDeleteModal(this.circuit$.value);
-        const res = await alert.onDidDismiss();
-        if (!!res.data && res.data === true) {
-            console.log('delete circuit', res.data);
-            this._storageService.deleteCircuit(this.circuit$.value);
-            this.deletedCircuit.emit();
-        }
+    public delete(): void {
+        from(this._modalService.confirmCircuitDeleteModal(this.circuit$.value))
+            .pipe(
+                switchMap((alert) => alert.onDidDismiss()),
+                filter((res) => res.data && res.data === true),
+                tap((res) => console.log('result of delete modal: ', res)),
+                tap((_) => this.deleteCircuit.emit()),
+                switchMap((res) => this._storageService.deleteCircuit(res.data))
+            )
+            .subscribe();
+
+        // const alert = await this._modalService.confirmCircuitDeleteModal(this.circuit$.value);
+        // const res = await alert.onDidDismiss();
+        // if (!!res.data && res.data === true) {
+        //     console.log('delete circuit', res.data);
+        //     this._storageService.deleteCircuit(this.circuit$.value);
+        //     this.deleteCircuit.emit();
+        // }
     }
 }

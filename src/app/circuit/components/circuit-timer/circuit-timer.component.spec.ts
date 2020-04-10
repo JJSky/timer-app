@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CircuitFabsComponent } from './circuit-fabs.component';
+import { CircuitTimerComponent } from './circuit-timer.component';
 
-describe('CircuitFabsComponent', () => {
-  let component: CircuitFabsComponent;
-  let fixture: ComponentFixture<CircuitFabsComponent>;
+describe('CircuitTimerComponent', () => {
+  let component: CircuitTimerComponent;
+  let fixture: ComponentFixture<CircuitTimerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CircuitFabsComponent ],
+      declarations: [ CircuitTimerComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CircuitFabsComponent);
+    fixture = TestBed.createComponent(CircuitTimerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

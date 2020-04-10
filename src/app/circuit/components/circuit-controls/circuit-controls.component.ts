@@ -4,16 +4,16 @@ import {
     Input,
     Output,
     EventEmitter,
-    ChangeDetectionStrategy
+    ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
-    selector: 'app-circuit-fabs',
-    templateUrl: './circuit-fabs.component.html',
-    styleUrls: ['./circuit-fabs.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-circuit-controls',
+    templateUrl: './circuit-controls.component.html',
+    styleUrls: ['./circuit-controls.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CircuitFabsComponent implements OnInit {
+export class CircuitControlsComponent implements OnInit {
     @Input()
     public isCountingDown: boolean;
     @Input()
