@@ -12,6 +12,7 @@ import { StorageService, ModalService } from '@core/services';
 import { CountdownComponent, CountdownEvent } from 'ngx-countdown';
 import { BehaviorSubject, Observable, merge, Subject, from, forkJoin } from 'rxjs';
 import { take, map, startWith, tap, switchMap, filter } from 'rxjs/operators';
+import { CircuitTimerComponent } from '../circuit-timer/circuit-timer.component';
 
 @Component({
     selector: 'app-circuit-view',
@@ -30,24 +31,27 @@ export class CircuitViewComponent implements OnInit {
      */
     public readonly timers$: Observable<TimerDto[]> = this.circuit$.pipe(
         map((circuit) => circuit.timers),
-        tap((_) => this.resetTimers()),
+        tap((timers) => {
+            this.resetTimers();
+            this.numTimers$.next(timers.length);
+        }),
         startWith([])
     );
 
     /**
      * Access to the countdown timer elements on the page.
      */
-    @ViewChildren('countdownTimer') timers: QueryList<CountdownComponent>;
+    @ViewChildren('childTimer') timers: QueryList<CircuitTimerComponent>;
 
     @Output()
     public editCircuit: EventEmitter<CircuitDto> = new EventEmitter<CircuitDto>();
     @Output()
     public deleteCircuit: EventEmitter<any> = new EventEmitter<any>();
 
-    public playIndex: number = 0;
+    public numTimers$: BehaviorSubject<number> = new BehaviorSubject(0);
+    public playIndex$: BehaviorSubject<number> = new BehaviorSubject(0);
     public isCountingDown$: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public circuitComplete$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    public play$: Subject<void> = new Subject();
 
     constructor(
         private readonly _storageService: StorageService,
@@ -62,59 +66,50 @@ export class CircuitViewComponent implements OnInit {
         if (e.action === 'done') {
             // When timer completes, increase index and play next timer
             this.isCountingDown$.next(false);
-            this.playIndex++;
+            this.nextTimer();
             this.play();
         }
     }
 
     /** Play or pause timers based on status. */
     public play(): void {
-        // First steps to handling playing within timers themselves
-        this.play$.next();
-
-        const curTimers = this.timers.toArray();
+        // console.log('try to play timer', this.playIndex$.value);
+        const numTimers = this.numTimers$.value;
 
         // Check if circuit is complete
-        if (this.playIndex >= curTimers.length) {
-            console.log('complete circuit');
+        if (this.playIndex$.value >= numTimers) {
+            console.log('complete circuit', this.playIndex$.value, numTimers);
             this.circuitComplete$.next(true);
-            return;
         }
 
-        // If timer counting down, pause it. Otherwise, play
-        if (this.isCountingDown$.value) {
-            console.log('pause');
-            curTimers[this.playIndex].pause();
-            this.isCountingDown$.next(false);
-        } else if (this.playIndex < curTimers.length) {
-            console.log('play');
-            curTimers[this.playIndex].resume();
-            this.isCountingDown$.next(true);
-        }
+        // Tell timers to play (only matching playIndex will play)
+        this.timers.forEach((t) => {
+            t.play();
+        });
     }
 
     /** Skip to next timer in circuit. */
     public skip(): void {
         console.log('skip current timer');
         const curTimers = this.timers.toArray();
-        curTimers[this.playIndex].stop();
+        curTimers[this.playIndex$.value].stop();
         this.isCountingDown$.next(false);
-        this.playIndex++;
-        this.play();
+        this.nextTimer();
     }
 
     /** Reset timers to initial state. */
     public resetTimers(): void {
-        console.log('reset timers');
-        if (!!this.timers && this.timers.length > 0) {
-            const curTimers = this.timers.toArray();
-            curTimers.forEach((timer) => {
-                timer.restart();
-            });
-            this.playIndex = 0;
-            this.isCountingDown$.next(false);
-            this.circuitComplete$.next(false);
+        // Make sure timer elements exist before trying to reset them
+        if (!this.timers) {
+            return;
         }
+
+        console.log('reset timers');
+        this.timers.forEach((t) => {
+            t.reset();
+        });
+        this.playIndex$.next(0);
+        this.circuitComplete$.next(false);
     }
 
     /** Delete circuit. */
@@ -123,7 +118,6 @@ export class CircuitViewComponent implements OnInit {
             .pipe(
                 switchMap((alert) => alert.onDidDismiss()),
                 filter((res) => res.data && res.data === true),
-                tap((res) => console.log('result of delete modal: ', res)),
                 tap((_) => this.deleteCircuit.emit()),
                 switchMap((res) => this._storageService.deleteCircuit(res.data))
             )
@@ -136,5 +130,15 @@ export class CircuitViewComponent implements OnInit {
         //     this._storageService.deleteCircuit(this.circuit$.value);
         //     this.deleteCircuit.emit();
         // }
+    }
+
+    /**
+     * Increment playIndex.
+     */
+    public nextTimer(): void {
+        const nextIndex = this.playIndex$.value + 1;
+        this.playIndex$.next(nextIndex);
+        // TODO: For some reason this play is activating on the stopped timer and not the next one
+        this.play();
     }
 }
