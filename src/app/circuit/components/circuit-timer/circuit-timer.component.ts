@@ -86,14 +86,14 @@ export class CircuitTimerComponent implements OnInit {
 
         // Pause if counting down, play if not
         if (playing) {
-            console.log('pause timer');
+            // If nextTimer has run and isPlaying isn't false yet
+            // play this timer anyways (HACKY)
             if (this.timer.left === this.timerData.totalTime) {
                 this.timer.resume();
             } else {
                 this.timer.pause();
             }
         } else {
-            console.log('resume timer');
             this.timer.resume();
         }
 

@@ -10,6 +10,12 @@
         }
         ion-item {
             --border-width: 0;
+
+            ion-input {
+                display: flex;
+                flex-direction: row-reverse;
+                text-align: end;
+            }
         }
         ion-input {
             --padding-end: 0;
