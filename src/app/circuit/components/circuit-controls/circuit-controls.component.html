@@ -1,33 +1,41 @@
-<ion-fab slot="fixed" vertical="center" horizontal="center">
-    <ion-fab-button size="small" class="secondary">
-        <ion-icon name="more"></ion-icon>
-    </ion-fab-button>
-    <ion-fab-list side="top">
-        <ion-fab-button class="secondary" (click)="reset.emit()">
-            <ion-icon name="refresh"></ion-icon>
+<div class="controls-wrapper">
+    <ion-fab slot="fixed" vertical="center" horizontal="center">
+        <ion-fab-button size="small" class="secondary">
+            <ion-icon name="more"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-list side="top">
+            <ion-fab-button class="secondary" (click)="reset.emit()">
+                <ion-icon name="refresh"></ion-icon>
+                <ion-ripple-effect></ion-ripple-effect>
+            </ion-fab-button>
+            <ion-fab-button class="secondary" (click)="edit.emit()">
+                <ion-icon name="create"></ion-icon>
+                <ion-ripple-effect></ion-ripple-effect>
+            </ion-fab-button>
+            <ion-fab-button class="secondary" (click)="delete.emit()">
+                <ion-icon name="trash"></ion-icon>
+                <ion-ripple-effect></ion-ripple-effect>
+            </ion-fab-button>
+        </ion-fab-list>
+    </ion-fab>
+    <div class="middle">
+        <ion-fab-button color="primary" class="play" (click)="playOrReset()">
+            <ion-icon
+                name="play"
+                *ngIf="!circuitComplete && !isPlaying"
+            ></ion-icon>
+            <ion-icon
+                name="pause"
+                *ngIf="!circuitComplete && isPlaying"
+            ></ion-icon>
+            <ion-icon name="refresh" *ngIf="circuitComplete"></ion-icon>
             <ion-ripple-effect></ion-ripple-effect>
         </ion-fab-button>
-        <ion-fab-button class="secondary" (click)="edit.emit()">
-            <ion-icon name="create"></ion-icon>
+    </div>
+    <ion-fab slot="fixed" horizontal="center">
+        <ion-fab-button size="small" class="secondary" (click)="skip.emit()">
+            <ion-icon name="skip-forward"></ion-icon>
             <ion-ripple-effect></ion-ripple-effect>
         </ion-fab-button>
-        <ion-fab-button class="secondary" (click)="delete.emit()">
-            <ion-icon name="trash"></ion-icon>
-            <ion-ripple-effect></ion-ripple-effect>
-        </ion-fab-button>
-    </ion-fab-list>
-</ion-fab>
-<div class="middle">
-    <ion-fab-button color="primary" class="play" (click)="playOrReset()">
-        <ion-icon name="play" *ngIf="!circuitComplete && !isPlaying"></ion-icon>
-        <ion-icon name="pause" *ngIf="!circuitComplete && isPlaying"></ion-icon>
-        <ion-icon name="refresh" *ngIf="circuitComplete"></ion-icon>
-        <ion-ripple-effect></ion-ripple-effect>
-    </ion-fab-button>
+    </ion-fab>
 </div>
-<ion-fab slot="fixed" horizontal="center">
-    <ion-fab-button size="small" class="secondary" (click)="skip.emit()">
-        <ion-icon name="skip-forward"></ion-icon>
-        <ion-ripple-effect></ion-ripple-effect>
-    </ion-fab-button>
-</ion-fab>
