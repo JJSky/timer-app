@@ -6,6 +6,9 @@ import {
     EventEmitter,
     ChangeDetectionStrategy,
 } from '@angular/core';
+import { CircuitState } from '@core/state';
+import { Select } from '@ngxs/store';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-circuit-controls',
@@ -15,7 +18,7 @@ import {
 })
 export class CircuitControlsComponent implements OnInit {
     @Input()
-    public isCountingDown: boolean;
+    public isPlaying: boolean = false;
     @Input()
     public circuitComplete: boolean;
     @Output()

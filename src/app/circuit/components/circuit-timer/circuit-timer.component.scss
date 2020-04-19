@@ -1,0 +1,15 @@
+:host {
+    width: 100%;
+
+    .timer-wrapper {
+        display: flex;
+        justify-content: space-between;
+        transition: font-size 0.2s;
+
+        &.active {
+            color: var(--ion-color-primary);
+            font-weight: bold;
+            font-size: 30px;
+        }
+    }
+}

@@ -6,20 +6,49 @@ import {
     ViewChildren,
     Output,
     EventEmitter,
+    ChangeDetectionStrategy,
 } from '@angular/core';
 import { CircuitDto, TimerDto } from '@shared/models';
 import { StorageService, ModalService } from '@core/services';
 import { CountdownComponent, CountdownEvent } from 'ngx-countdown';
-import { BehaviorSubject, Observable, merge, Subject, from, forkJoin } from 'rxjs';
-import { take, map, startWith, tap, switchMap, filter } from 'rxjs/operators';
+import {
+    BehaviorSubject,
+    Observable,
+    merge,
+    Subject,
+    from,
+    forkJoin,
+} from 'rxjs';
+import {
+    take,
+    map,
+    startWith,
+    tap,
+    switchMap,
+    filter,
+    distinctUntilChanged,
+} from 'rxjs/operators';
 import { CircuitTimerComponent } from '../circuit-timer/circuit-timer.component';
+import { Select } from '@ngxs/store';
+import { CircuitState } from '@core/state';
+import { Emitter, Emittable } from '@ngxs-labs/emitter';
 
 @Component({
     selector: 'app-circuit-view',
     templateUrl: './circuit-view.component.html',
     styleUrls: ['./circuit-view.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CircuitViewComponent implements OnInit {
+    /**
+     * Circuit playing state.
+     */
+    @Select(CircuitState.isPlaying)
+    public isPlaying$: Observable<boolean>;
+
+    /**
+     * Circuit data from home page.
+     */
     public circuit$: BehaviorSubject<CircuitDto> = new BehaviorSubject(null);
     @Input('circuit')
     public set setCircuit(value: CircuitDto) {
@@ -32,7 +61,7 @@ export class CircuitViewComponent implements OnInit {
     public readonly timers$: Observable<TimerDto[]> = this.circuit$.pipe(
         map((circuit) => circuit.timers),
         tap((timers) => {
-            this.resetTimers();
+            // this.resetTimers();
             this.numTimers$.next(timers.length);
         }),
         startWith([])
@@ -44,14 +73,17 @@ export class CircuitViewComponent implements OnInit {
     @ViewChildren('childTimer') timers: QueryList<CircuitTimerComponent>;
 
     @Output()
-    public editCircuit: EventEmitter<CircuitDto> = new EventEmitter<CircuitDto>();
+    public editCircuit: EventEmitter<CircuitDto> = new EventEmitter<
+        CircuitDto
+    >();
     @Output()
     public deleteCircuit: EventEmitter<any> = new EventEmitter<any>();
 
     public numTimers$: BehaviorSubject<number> = new BehaviorSubject(0);
     public playIndex$: BehaviorSubject<number> = new BehaviorSubject(0);
-    public isCountingDown$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    public circuitComplete$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    public circuitComplete$: BehaviorSubject<boolean> = new BehaviorSubject(
+        false
+    );
 
     constructor(
         private readonly _storageService: StorageService,
@@ -60,32 +92,21 @@ export class CircuitViewComponent implements OnInit {
 
     ngOnInit(): void {}
 
-    /** Output and handle events output by timers. */
-    public handleTimer(e: CountdownEvent): void {
-        console.log('timer event: ', e);
-        if (e.action === 'done') {
-            // When timer completes, increase index and play next timer
-            this.isCountingDown$.next(false);
-            this.nextTimer();
-            this.play();
-        }
-    }
-
     /** Play or pause timers based on status. */
     public play(): void {
-        // console.log('try to play timer', this.playIndex$.value);
+        const curPlayIndex = this.playIndex$.value;
         const numTimers = this.numTimers$.value;
+        console.log('try to play timer', curPlayIndex);
 
         // Check if circuit is complete
-        if (this.playIndex$.value >= numTimers) {
-            console.log('complete circuit', this.playIndex$.value, numTimers);
+        if (curPlayIndex >= numTimers) {
+            console.log('complete circuit', curPlayIndex, numTimers);
             this.circuitComplete$.next(true);
+        } else {
+            // Tell matching playIndex timer to play
+            const timerArray = this.timers.toArray();
+            timerArray[curPlayIndex].play();
         }
-
-        // Tell timers to play (only matching playIndex will play)
-        this.timers.forEach((t) => {
-            t.play();
-        });
     }
 
     /** Skip to next timer in circuit. */
@@ -93,7 +114,6 @@ export class CircuitViewComponent implements OnInit {
         console.log('skip current timer');
         const curTimers = this.timers.toArray();
         curTimers[this.playIndex$.value].stop();
-        this.isCountingDown$.next(false);
         this.nextTimer();
     }
 
@@ -138,7 +158,15 @@ export class CircuitViewComponent implements OnInit {
     public nextTimer(): void {
         const nextIndex = this.playIndex$.value + 1;
         this.playIndex$.next(nextIndex);
+
         // TODO: For some reason this play is activating on the stopped timer and not the next one
         this.play();
+    }
+
+    public timerTrackBy(index: number, item: TimerDto): string {
+        if (!item) {
+            return null;
+        }
+        return item.id;
     }
 }

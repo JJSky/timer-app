@@ -38,7 +38,10 @@ export class CircuitHomeComponent implements OnInit {
         this._slides = elRef;
     }
 
-    constructor(private _modalService: ModalService, private _storage: StorageService) {}
+    constructor(
+        private _modalService: ModalService,
+        private _storage: StorageService
+    ) {}
 
     ngOnInit(): void {
         // Only automatically open modal if no circuits exist already

@@ -8,17 +8,19 @@
             <ion-ripple-effect></ion-ripple-effect>
         </ion-fab-button>
         <ion-fab-button class="secondary" (click)="edit.emit()">
-            <ion-icon name="create"></ion-icon> <ion-ripple-effect></ion-ripple-effect>
+            <ion-icon name="create"></ion-icon>
+            <ion-ripple-effect></ion-ripple-effect>
         </ion-fab-button>
         <ion-fab-button class="secondary" (click)="delete.emit()">
-            <ion-icon name="trash"></ion-icon> <ion-ripple-effect></ion-ripple-effect>
+            <ion-icon name="trash"></ion-icon>
+            <ion-ripple-effect></ion-ripple-effect>
         </ion-fab-button>
     </ion-fab-list>
 </ion-fab>
 <div class="middle">
     <ion-fab-button color="primary" class="play" (click)="playOrReset()">
-        <ion-icon name="play" *ngIf="!circuitComplete && !isCountingDown"></ion-icon>
-        <ion-icon name="pause" *ngIf="!circuitComplete && isCountingDown"></ion-icon>
+        <ion-icon name="play" *ngIf="!circuitComplete && !isPlaying"></ion-icon>
+        <ion-icon name="pause" *ngIf="!circuitComplete && isPlaying"></ion-icon>
         <ion-icon name="refresh" *ngIf="circuitComplete"></ion-icon>
         <ion-ripple-effect></ion-ripple-effect>
     </ion-fab-button>

@@ -1,4 +1,4 @@
-<div class="timer-wrapper" *ngIf="timerData as t">
+<div class="timer-wrapper" *ngIf="timerData as t" [class.active]="isActive">
     <span class="name">{{ t.name }}</span>
     <span class="countdown">
         <countdown

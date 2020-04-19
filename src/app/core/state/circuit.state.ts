@@ -5,12 +5,14 @@ import { CircuitDto } from '@shared/models';
 
 export interface CircuitStateModel {
     circuits: CircuitDto[];
+    isPlaying: boolean;
 }
 
 @State<CircuitStateModel>({
     name: 'circuit',
     defaults: {
         circuits: [],
+        isPlaying: false,
     },
 })
 export class CircuitState {
@@ -23,6 +25,30 @@ export class CircuitState {
     @ImmutableSelector()
     public static circuits(state: CircuitStateModel): CircuitDto[] {
         return state.circuits;
+    }
+
+    /**
+     * Returns whether a timer is currently playing.
+     */
+    @Selector()
+    @ImmutableSelector()
+    public static isPlaying(state: CircuitStateModel): boolean {
+        return state.isPlaying;
+    }
+
+    /**
+     * Set whether circuit is playing or not.
+     */
+    @Receiver()
+    @ImmutableContext()
+    public static setPlaying(
+        { setState }: StateContext<CircuitStateModel>,
+        { payload }: { payload: boolean }
+    ): void {
+        setState((state: CircuitStateModel) => {
+            state.isPlaying = payload;
+            return state;
+        });
     }
 
     /**

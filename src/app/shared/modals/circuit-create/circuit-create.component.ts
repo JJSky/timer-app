@@ -1,14 +1,25 @@
-import { Component, OnInit, QueryList, ViewChildren, Input } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    QueryList,
+    ViewChildren,
+    Input,
+    ChangeDetectionStrategy,
+} from '@angular/core';
 import {
     FormGroup,
     FormBuilder,
     Validators,
     FormArray,
     FormControl,
-    ValidationErrors
+    ValidationErrors,
 } from '@angular/forms';
 import { PickerOptions, PickerColumnOption } from '@ionic/core';
-import { PickerController, ModalController, IonItemSliding } from '@ionic/angular';
+import {
+    PickerController,
+    ModalController,
+    IonItemSliding,
+} from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
 import { TimerDto, CircuitDto } from '@shared/models';
 const uuidv1 = require('uuid/v1');
@@ -18,25 +29,40 @@ const maxSeconds = 59;
 @Component({
     selector: 'app-circuit-create',
     templateUrl: './circuit-create.component.html',
-    styleUrls: ['./circuit-create.component.scss']
+    styleUrls: ['./circuit-create.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CircuitCreateComponent implements OnInit {
-    /** Existing circuit (if editing). */
+    /**
+     * Existing circuit (if editing).
+     */
     @Input() circuit: CircuitDto;
 
-    /** Get element reference to list of IonItemSliding elements. */
+    /**
+     * Get element reference to list of IonItemSliding elements.
+     */
     @ViewChildren('slideable') slidables: QueryList<IonItemSliding>;
 
-    /** Form for a circuit and the timers within it. */
+    /**
+     * Form for a circuit and the timers within it.
+     */
     public circuitForm: FormGroup;
 
-    /** Array for holding errors from manual form validation. */
-    public errors$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+    /**
+     * Array for holding errors from manual form validation.
+     */
+    public errors$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(
+        []
+    );
 
-    /** Validation error messages defined here. */
+    /**
+     * Validation error messages defined here.
+     */
     public validationMessages: any = {
-        circuitName: [{ type: 'required', message: 'Circuit name is required.' }],
-        timer: [{ type: 'min', message: 'An amount of time is required.' }]
+        circuitName: [
+            { type: 'required', message: 'Circuit name is required.' },
+        ],
+        timer: [{ type: 'min', message: 'An amount of time is required.' }],
     };
 
     constructor(
@@ -48,8 +74,11 @@ export class CircuitCreateComponent implements OnInit {
     ngOnInit(): void {
         // Initialize circuit form
         this.circuitForm = this._fb.group({
-            circuitName: [this.circuit ? this.circuit.name : '', [Validators.required]],
-            timers: this._fb.array([])
+            circuitName: [
+                this.circuit ? this.circuit.name : '',
+                [Validators.required],
+            ],
+            timers: this._fb.array([]),
         });
 
         // If editing, populate timers
@@ -96,21 +125,34 @@ export class CircuitCreateComponent implements OnInit {
         return this.circuitForm.get('timers') as FormArray;
     }
 
-    /** Add timer to timers FormArray. */
+    /**
+     * Add timer to timers FormArray.
+     */
     public addTimer(timer?: TimerDto): void {
         this.timersFormArray.push(this.createTimer(timer));
     }
 
-    /** Returns new formgroup for a timer. */
+    /**
+     * Returns new formgroup for a timer.
+     */
     public createTimer(timer?: TimerDto): FormGroup {
         return this._fb.group({
             name: timer ? timer.name : '',
-            minutes: [timer ? timer.minutes : 0, [Validators.min(0), Validators.max(maxMinutes)]],
+            minutes: [
+                timer ? timer.minutes : 0,
+                [Validators.min(0), Validators.max(maxMinutes)],
+            ],
             seconds: [
                 timer ? timer.seconds : 0,
-                [Validators.min(timer ? timer.minutes : 0), Validators.max(maxSeconds)]
+                [
+                    Validators.min(timer ? timer.minutes : 0),
+                    Validators.max(maxSeconds),
+                ],
             ],
-            totalTime: [timer ? timer.totalTime : 0, [Validators.required, Validators.min(1)]]
+            totalTime: [
+                timer ? timer.totalTime : 0,
+                [Validators.required, Validators.min(1)],
+            ],
         });
     }
 
@@ -155,14 +197,14 @@ export class CircuitCreateComponent implements OnInit {
         for (let i = 0; i < minutesInHour; i++) {
             const formattedIndex = i.toLocaleString('en-us', {
                 minimumIntegerDigits: 2,
-                useGrouping: false
+                useGrouping: false,
             });
             minutesOptions.push({ value: i, text: formattedIndex });
         }
         for (let i = 0; i < secondsInMinute; i++) {
             const formattedIndex = i.toLocaleString('en-us', {
                 minimumIntegerDigits: 2,
-                useGrouping: false
+                useGrouping: false,
             });
             secondsOptions.push({ value: i, text: formattedIndex });
         }
@@ -173,37 +215,37 @@ export class CircuitCreateComponent implements OnInit {
                     role: 'cancel',
                     handler: (value: any): void => {
                         canceled = true;
-                    }
+                    },
                 },
                 {
-                    text: 'Done'
-                }
+                    text: 'Done',
+                },
             ],
             columns: [
                 {
                     name: 'minutes',
                     options: minutesOptions,
-                    selectedIndex: timer.get('minutes').value
+                    selectedIndex: timer.get('minutes').value,
                 },
                 {
                     name: 'seconds',
                     options: secondsOptions,
-                    selectedIndex: timer.get('seconds').value
-                }
-            ]
+                    selectedIndex: timer.get('seconds').value,
+                },
+            ],
         };
 
         const picker = await this._pickerCtrl.create(opts);
 
         // This fixes overlapping options bug in the picker
-        picker.columns[0].options.forEach(element => {
+        picker.columns[0].options.forEach((element) => {
             delete element.selected;
             delete element.duration;
             delete element.transform;
         });
 
         picker.present();
-        picker.onDidDismiss().then(async data => {
+        picker.onDidDismiss().then(async (data) => {
             const minCol = await picker.getColumn('minutes');
             const secCol = await picker.getColumn('seconds');
             const milisecondsInMinute = 60000;
@@ -216,7 +258,10 @@ export class CircuitCreateComponent implements OnInit {
                 timer.get('seconds').setValue(seconds);
                 timer
                     .get('totalTime')
-                    .setValue(minutes * milisecondsInMinute + seconds * milisecondsInSecond);
+                    .setValue(
+                        minutes * milisecondsInMinute +
+                            seconds * milisecondsInSecond
+                    );
             }
         });
     }
@@ -226,7 +271,7 @@ export class CircuitCreateComponent implements OnInit {
      */
     public async submitCircuit({
         valid,
-        value
+        value,
     }: {
         valid: boolean;
         value: { circuitName: string; timers: TimerDto[] };
@@ -243,12 +288,18 @@ export class CircuitCreateComponent implements OnInit {
         if (errArray.length || !valid) {
             console.log('there are errors, stop submission', errArray);
 
-            Object.keys(this.circuitForm.controls).forEach(key => {
-                const controlErrors: ValidationErrors = this.circuitForm.get(key).errors;
+            Object.keys(this.circuitForm.controls).forEach((key) => {
+                const controlErrors: ValidationErrors = this.circuitForm.get(
+                    key
+                ).errors;
                 if (controlErrors != null) {
-                    Object.keys(controlErrors).forEach(keyError => {
+                    Object.keys(controlErrors).forEach((keyError) => {
                         console.log(
-                            'Key control: ' + key + ', keyError: ' + keyError + ', err value: ',
+                            'Key control: ' +
+                                key +
+                                ', keyError: ' +
+                                keyError +
+                                ', err value: ',
                             controlErrors[keyError]
                         );
                     });
@@ -261,7 +312,7 @@ export class CircuitCreateComponent implements OnInit {
         const newCircuit = new CircuitDto({
             id: this.circuit ? this.circuit.id : uuidv1(),
             name: value.circuitName,
-            timers: []
+            timers: [],
         });
 
         let timerIndex = 0;
@@ -282,7 +333,7 @@ export class CircuitCreateComponent implements OnInit {
                 name: timer.name,
                 minutes: timer.minutes,
                 seconds: timer.seconds,
-                totalTime: timer.totalTime
+                totalTime: timer.totalTime,
             });
             newCircuit.timers.push(newTimer);
             timerIndex++;

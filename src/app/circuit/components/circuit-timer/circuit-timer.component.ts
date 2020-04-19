@@ -1,19 +1,35 @@
-import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    ViewChild,
+    Output,
+    EventEmitter,
+    ChangeDetectionStrategy,
+} from '@angular/core';
 import { TimerDto } from '@shared/models';
-import { Subject, BehaviorSubject } from 'rxjs';
-import { takeUntil, filter, tap } from 'rxjs/operators';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
+import { take, tap, filter, takeUntil } from 'rxjs/operators';
 import { CountdownComponent, CountdownEvent } from 'ngx-countdown';
+import { CircuitState } from '@core/state';
+import { Select } from '@ngxs/store';
+import { Emitter, Emittable } from '@ngxs-labs/emitter';
 
 @Component({
     selector: 'app-circuit-timer',
     templateUrl: './circuit-timer.component.html',
     styleUrls: ['./circuit-timer.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CircuitTimerComponent implements OnInit {
+    @Emitter(CircuitState.setPlaying)
+    private _setPlaying: Emittable<boolean>;
+
     /**
      * Timer element on the page.
      */
-    @ViewChild('countdownTimer', { static: false }) timer: CountdownComponent;
+    @ViewChild('countdownTimer', { static: false })
+    timer: CountdownComponent;
 
     /**
      * Timer data from parent.
@@ -28,14 +44,20 @@ export class CircuitTimerComponent implements OnInit {
     @Input()
     public isActive: boolean = false;
 
-    /** Emits if this timer completes. */
-    @Output()
-    public timerComplete: EventEmitter<any> = new EventEmitter<any>();
-
     /**
-     * Is this timer currently counting down.
+     * Is circuit currently playing?
      */
     public isPlaying$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    @Input('isPlaying')
+    public set setIsPlaying(value: boolean) {
+        this.isPlaying$.next(value);
+    }
+
+    /**
+     * Emits if this timer completes.
+     */
+    @Output()
+    public timerComplete: EventEmitter<any> = new EventEmitter<any>();
 
     private _unsub: Subject<void> = new Subject();
 
@@ -52,27 +74,38 @@ export class CircuitTimerComponent implements OnInit {
      * Play timer if active.
      */
     public play(): void {
-        console.log('am I active?', this.isActive);
         // Do nothing if not an active timer
-        if (!this.isActive) {
-            return;
-        }
+        // NOTE: this causes issues with consecutive timers
+        // if (!this.isActive) {
+        //     console.log('not an active timer, do not play');
+        //     return;
+        // }
 
         // Check if timer is currently counting down
-        const isPlaying = this.isPlaying$.value;
+        const playing = this.isPlaying$.value;
 
-        // Pause if it is counting down, play if not
-        if (isPlaying) {
-            this.timer.pause();
+        // Pause if counting down, play if not
+        if (playing) {
+            console.log('pause timer');
+            if (this.timer.left === this.timerData.totalTime) {
+                this.timer.resume();
+            } else {
+                this.timer.pause();
+            }
         } else {
+            console.log('resume timer');
             this.timer.resume();
         }
 
-        // Update status of this timer
-        this.isPlaying$.next(!isPlaying);
+        // Update circuit status
+        this._setPlaying.emit(!playing);
     }
 
+    /**
+     * Stop timer (not resumable).
+     */
     public stop(): void {
+        console.log('stop timer');
         this.timer.stop();
     }
 
@@ -80,7 +113,9 @@ export class CircuitTimerComponent implements OnInit {
      * Reset timer to initial state.
      */
     public reset(): void {
-        this.isPlaying$.next(false);
+        if (this.isActive) {
+            this._setPlaying.emit(false);
+        }
         this.timer.restart();
     }
 
@@ -90,7 +125,8 @@ export class CircuitTimerComponent implements OnInit {
 
         // Emit if timer completes
         if (e.action === 'done') {
-            this.isPlaying$.next(false);
+            console.log('done action');
+            this._setPlaying.emit(false);
             this.timerComplete.emit();
         }
     }

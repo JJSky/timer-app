@@ -7,11 +7,12 @@ export interface TimerStateModel {
     timers: TimerDto[];
 }
 
+/** THIS IS NOT BEING USED AT ALL */
 @State<TimerStateModel>({
     name: 'timer',
     defaults: {
-        timers: []
-    }
+        timers: [],
+    },
 })
 export class TimerState {
     constructor() {}

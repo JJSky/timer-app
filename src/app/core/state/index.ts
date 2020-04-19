@@ -1,6 +1,6 @@
-import { TimerState } from './timer.state';
+// import { TimerState } from './timer.state';
 import { CircuitState } from './circuit.state';
 
-export const states = [TimerState, CircuitState];
+export const states = [CircuitState];
 
-export { TimerState, CircuitState };
+export { CircuitState };

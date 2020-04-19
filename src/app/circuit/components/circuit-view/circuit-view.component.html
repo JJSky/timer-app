@@ -2,18 +2,25 @@
 <ng-container *ngIf="circuit$ | async as circuit">
     <h1>{{ circuit.name }}</h1>
     <ion-list>
-        <ion-item *ngFor="let timer of timers$ | async; let i = index">
+        <ion-item
+            *ngFor="
+                let timer of timers$ | async;
+                let i = index;
+                trackBy: timerTrackBy
+            "
+        >
             <app-circuit-timer
                 #childTimer
                 [timerData]="timer"
                 [isActive]="(playIndex$ | async) === i"
+                [isPlaying]="isPlaying$ | async"
                 (timerComplete)="nextTimer()"
             ></app-circuit-timer>
         </ion-item>
     </ion-list>
     <app-circuit-controls
         [circuitComplete]="circuitComplete$ | async"
-        [isCountingDown]="isCountingDown$ | async"
+        [isPlaying]="isPlaying$ | async"
         (play)="play()"
         (skip)="skip()"
         (delete)="delete()"
