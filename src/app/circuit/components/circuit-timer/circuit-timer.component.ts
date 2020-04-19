@@ -86,19 +86,26 @@ export class CircuitTimerComponent implements OnInit {
 
         // Pause if counting down, play if not
         if (playing) {
-            console.log('pause timer');
             if (this.timer.left === this.timerData.totalTime) {
+                console.log('pause timer, just kidding keep going');
                 this.timer.resume();
+
+                // Update circuit status
+                this._setPlaying.emit(true);
             } else {
+                console.log('pause timer');
                 this.timer.pause();
+
+                // Update circuit status
+                this._setPlaying.emit(false);
             }
         } else {
             console.log('resume timer');
             this.timer.resume();
-        }
 
-        // Update circuit status
-        this._setPlaying.emit(!playing);
+            // Update circuit status
+            this._setPlaying.emit(true);
+        }
     }
 
     /**

@@ -1,8 +1,9 @@
 <div class="spacer"></div>
 <ng-container *ngIf="circuit$ | async as circuit">
     <h1>{{ circuit.name }}</h1>
-    <ion-list>
+    <ion-list #timerList>
         <ion-item
+            #scrollTo
             *ngFor="
                 let timer of timers$ | async;
                 let i = index;
