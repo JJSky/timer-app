@@ -164,11 +164,15 @@ export class CircuitCreateComponent implements OnInit {
      * @param index Index of timer in timerFormArray.
      */
     public updateTimerTotalTime(index: number): void {
-        const secondsInMinute = 60;
+        const milisecondsInMinute = 60000;
+        const milisecondsInSecond = 1000;
+
         const timerGroup = this.timersFormArray.controls[index];
         const min =
-            parseInt(timerGroup.get('minutes').value, 10) * secondsInMinute;
-        const sec = parseInt(timerGroup.get('seconds').value, 10);
+            parseInt(timerGroup.get('minutes').value, 10) * milisecondsInMinute;
+        const sec =
+            parseInt(timerGroup.get('seconds').value, 10) * milisecondsInSecond;
+
         timerGroup.get('totalTime').patchValue(min + sec);
     }
 
@@ -199,88 +203,6 @@ export class CircuitCreateComponent implements OnInit {
         event.detail.complete();
     }
     // ~~~~~~~~~~~~~~~~~~ Form array stuff ends here ~~~~~~~~~~~~~~~~~~
-
-    /**
-     * Select minutes and seconds for individual timer.
-     * @param timer Autofill picker with previously selected values.
-     */
-    public async chooseTime(timer: FormGroup): Promise<void> {
-        let canceled = false;
-        const minutesInHour = 60;
-        const secondsInMinute = 60;
-        const minutesOptions: Array<PickerColumnOption> = [];
-        const secondsOptions: Array<PickerColumnOption> = [];
-        for (let i = 0; i < minutesInHour; i++) {
-            const formattedIndex = i.toLocaleString('en-us', {
-                minimumIntegerDigits: 2,
-                useGrouping: false,
-            });
-            minutesOptions.push({ value: i, text: formattedIndex });
-        }
-        for (let i = 0; i < secondsInMinute; i++) {
-            const formattedIndex = i.toLocaleString('en-us', {
-                minimumIntegerDigits: 2,
-                useGrouping: false,
-            });
-            secondsOptions.push({ value: i, text: formattedIndex });
-        }
-        const opts: PickerOptions = {
-            buttons: [
-                {
-                    text: 'Cancel',
-                    role: 'cancel',
-                    handler: (value: any): void => {
-                        canceled = true;
-                    },
-                },
-                {
-                    text: 'Done',
-                },
-            ],
-            columns: [
-                {
-                    name: 'minutes',
-                    options: minutesOptions,
-                    selectedIndex: timer.get('minutes').value,
-                },
-                {
-                    name: 'seconds',
-                    options: secondsOptions,
-                    selectedIndex: timer.get('seconds').value,
-                },
-            ],
-        };
-
-        const picker = await this._pickerCtrl.create(opts);
-
-        // This fixes overlapping options bug in the picker
-        picker.columns[0].options.forEach((element) => {
-            delete element.selected;
-            delete element.duration;
-            delete element.transform;
-        });
-
-        picker.present();
-        picker.onDidDismiss().then(async (data) => {
-            const minCol = await picker.getColumn('minutes');
-            const secCol = await picker.getColumn('seconds');
-            const milisecondsInMinute = 60000;
-            const milisecondsInSecond = 1000;
-
-            if (!canceled) {
-                const minutes = minCol.options[minCol.selectedIndex].value;
-                const seconds = secCol.options[secCol.selectedIndex].value;
-                timer.get('minutes').setValue(minutes);
-                timer.get('seconds').setValue(seconds);
-                timer
-                    .get('totalTime')
-                    .setValue(
-                        minutes * milisecondsInMinute +
-                            seconds * milisecondsInSecond
-                    );
-            }
-        });
-    }
 
     /**
      * Submit circuit form by dismissing modal with circuit data.

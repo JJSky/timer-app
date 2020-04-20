@@ -22,6 +22,9 @@ import { Emitter, Emittable } from '@ngxs-labs/emitter';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CircuitTimerComponent implements OnInit {
+    /**
+     * Set circuit status isPlaying in state.
+     */
     @Emitter(CircuitState.setPlaying)
     private _setPlaying: Emittable<boolean>;
 
@@ -110,6 +113,14 @@ export class CircuitTimerComponent implements OnInit {
     }
 
     /**
+     * Pause timer.
+     */
+    public pause(): void {
+        this.timer.pause();
+        this._setPlaying.emit(false);
+    }
+
+    /**
      * Stop timer (not resumable).
      */
     public stop(): void {
@@ -127,7 +138,9 @@ export class CircuitTimerComponent implements OnInit {
         this.timer.restart();
     }
 
-    /** Output and handle events output by timers. */
+    /**
+     * Output and handle events output by timers.
+     */
     public handleTimer(e: CountdownEvent): void {
         console.log('timer event: ', e);
 

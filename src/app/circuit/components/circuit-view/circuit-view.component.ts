@@ -103,6 +103,12 @@ export class CircuitViewComponent implements OnInit {
         }
     }
 
+    public pauseTimer(): void {
+        const curPlayIndex = this.playIndex$.value;
+        const timerArray = this.timers.toArray();
+        timerArray[curPlayIndex].pause();
+    }
+
     /** Skip to next timer in circuit. */
     public skip(): void {
         console.log('skip current timer');

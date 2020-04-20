@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ViewChild,
+    ElementRef,
+    ViewChildren,
+    QueryList,
+} from '@angular/core';
 import { Select } from '@ngxs/store';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
@@ -6,6 +13,8 @@ import { ModalService, StorageService } from '@core/services';
 import { CircuitState } from '@core/state';
 import { CircuitDto } from '@shared/models';
 import { IonSlides } from '@ionic/angular';
+import { Emitter, Emittable } from '@ngxs-labs/emitter';
+import { CircuitViewComponent } from 'app/circuit/components';
 
 @Component({
     selector: 'app-circuit-home',
@@ -37,6 +46,10 @@ export class CircuitHomeComponent implements OnInit {
     @ViewChild('slides', { static: false }) set slides(elRef: IonSlides) {
         this._slides = elRef;
     }
+
+    @ViewChildren('circuitEl') public circuitEls: QueryList<
+        CircuitViewComponent
+    >;
 
     constructor(
         private _modalService: ModalService,
@@ -91,20 +104,18 @@ export class CircuitHomeComponent implements OnInit {
     /**
      * Run whenever the ion-slider changes slides.
      */
-    public slideChange(event: any): void {
+    public async slideChange(event: any): Promise<void> {
         console.log('change slide', event);
+        const els = this.circuitEls.toArray();
+        const i = await this._slides.getActiveIndex();
+        // TODO: Stop timer when swiping.
+        els[i].pauseTimer();
     }
 
     /**
      * Animate to previous slide after circuit deletion.
      */
     public async deleteCircuit(): Promise<void> {
-        // of(this._slides.slidePrev())
-        //     .pipe(
-        //         take(1),
-        //         tap((_) => this._slides.update())
-        //     )
-        //     .subscribe();
         this._slides.slidePrev();
         await this._slides.update();
     }
