@@ -74,7 +74,7 @@ export class CircuitHomeComponent implements OnInit {
     ngOnInit(): void {
         // Only automatically open modal if no circuits exist already
         this.circuits$.pipe(take(1)).subscribe((circuits) => {
-            if (!!!circuits) {
+            if (!circuits) {
                 this.createCircuit();
             }
         });

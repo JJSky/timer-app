@@ -14,7 +14,6 @@ import {
     FormControl,
     ValidationErrors,
 } from '@angular/forms';
-import { PickerOptions, PickerColumnOption } from '@ionic/core';
 import {
     PickerController,
     ModalController,
@@ -138,7 +137,6 @@ export class CircuitCreateComponent implements OnInit {
      * Returns new formgroup for a timer.
      */
     public createTimer(timer?: TimerDto): FormGroup {
-        console.log(timer);
         return this._fb.group({
             name: timer ? timer.name : '',
             minutes: [
@@ -219,7 +217,7 @@ export class CircuitCreateComponent implements OnInit {
         const errArray = [];
         for (const t of value.timers) {
             if (t.totalTime <= 0) {
-                errArray.push('Timer cannot have no time');
+                errArray.push(`Timer ${t.name} cannot have no time`);
             }
         }
         this.errors$.next(errArray);
@@ -258,7 +256,7 @@ export class CircuitCreateComponent implements OnInit {
             console.log('timer from form: ', timer, timerIndex);
 
             // If no name filled in for timer, generate name
-            if (!!!timer.name) {
+            if (!timer.name) {
                 timer.name = value.circuitName + ' Timer #' + (timerIndex + 1);
             }
 
