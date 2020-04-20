@@ -14,11 +14,7 @@ import {
     FormControl,
     ValidationErrors,
 } from '@angular/forms';
-import {
-    PickerController,
-    ModalController,
-    IonItemSliding,
-} from '@ionic/angular';
+import { PickerController, ModalController, IonItemSliding } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
 import { TimerDto, CircuitDto } from '../../models';
 const uuidv1 = require('uuid/v1');
@@ -50,17 +46,13 @@ export class CircuitCreateComponent implements OnInit {
     /**
      * Array for holding errors from manual form validation.
      */
-    public errors$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(
-        []
-    );
+    public errors$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
     /**
      * Validation error messages defined here.
      */
     public validationMessages: any = {
-        circuitName: [
-            { type: 'required', message: 'Circuit name is required.' },
-        ],
+        circuitName: [{ type: 'required', message: 'Circuit name is required.' }],
         timer: [{ type: 'min', message: 'An amount of time is required.' }],
     };
 
@@ -73,10 +65,7 @@ export class CircuitCreateComponent implements OnInit {
     ngOnInit(): void {
         // Initialize circuit form
         this.circuitForm = this._fb.group({
-            circuitName: [
-                this.circuit ? this.circuit.name : '',
-                [Validators.required],
-            ],
+            circuitName: [this.circuit ? this.circuit.name : '', [Validators.required]],
             timers: this._fb.array([]),
         });
 
@@ -139,21 +128,12 @@ export class CircuitCreateComponent implements OnInit {
     public createTimer(timer?: TimerDto): FormGroup {
         return this._fb.group({
             name: timer ? timer.name : '',
-            minutes: [
-                timer ? timer.minutes : '',
-                [Validators.min(0), Validators.max(maxMinutes)],
-            ],
+            minutes: [timer ? timer.minutes : '', [Validators.min(0), Validators.max(maxMinutes)]],
             seconds: [
                 timer ? timer.seconds : '',
-                [
-                    Validators.min(timer ? timer.minutes : 0),
-                    Validators.max(maxSeconds),
-                ],
+                [Validators.min(timer ? timer.minutes : 0), Validators.max(maxSeconds)],
             ],
-            totalTime: [
-                timer ? timer.totalTime : 0,
-                [Validators.required, Validators.min(1)],
-            ],
+            totalTime: [timer ? timer.totalTime : 0, [Validators.required, Validators.min(1)]],
         });
     }
 
@@ -166,10 +146,8 @@ export class CircuitCreateComponent implements OnInit {
         const milisecondsInSecond = 1000;
 
         const timerGroup = this.timersFormArray.controls[index];
-        const min =
-            parseInt(timerGroup.get('minutes').value, 10) * milisecondsInMinute;
-        const sec =
-            parseInt(timerGroup.get('seconds').value, 10) * milisecondsInSecond;
+        const min = parseInt(timerGroup.get('minutes').value, 10) * milisecondsInMinute;
+        const sec = parseInt(timerGroup.get('seconds').value, 10) * milisecondsInSecond;
 
         timerGroup.get('totalTime').patchValue(min + sec);
     }
@@ -180,6 +158,7 @@ export class CircuitCreateComponent implements OnInit {
      */
     public deleteTimer(index: number): void {
         this.timersFormArray.controls.splice(index, 1);
+        this.timersFormArray.updateValueAndValidity();
     }
 
     /**
@@ -213,6 +192,7 @@ export class CircuitCreateComponent implements OnInit {
         value: { circuitName: string; timers: TimerDto[] };
     }): Promise<void> {
         console.log('form value', valid, value);
+
         // Manual validation (hopefully don't need)
         const errArray = [];
         for (const t of value.timers) {
@@ -225,17 +205,11 @@ export class CircuitCreateComponent implements OnInit {
             console.log('there are errors, stop submission', errArray);
 
             Object.keys(this.circuitForm.controls).forEach((key) => {
-                const controlErrors: ValidationErrors = this.circuitForm.get(
-                    key
-                ).errors;
+                const controlErrors: ValidationErrors = this.circuitForm.get(key).errors;
                 if (controlErrors != null) {
                     Object.keys(controlErrors).forEach((keyError) => {
                         console.log(
-                            'Key control: ' +
-                                key +
-                                ', keyError: ' +
-                                keyError +
-                                ', err value: ',
+                            'Key control: ' + key + ', keyError: ' + keyError + ', err value: ',
                             controlErrors[keyError]
                         );
                     });
