@@ -7,13 +7,19 @@
         max-height: 50px;
     }
 
-    ion-item {
-        .timer-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            font-size: 16px;
+    ion-list {
+        max-height: calc(100vh - 167px);
+        overflow: scroll;
+        padding-bottom: 170px;
+
+        ion-item {
+            .timer-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                font-size: 16px;
+            }
         }
     }
 }

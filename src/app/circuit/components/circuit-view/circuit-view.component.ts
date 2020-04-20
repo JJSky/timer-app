@@ -7,31 +7,15 @@ import {
     Output,
     EventEmitter,
     ChangeDetectionStrategy,
+    ElementRef,
 } from '@angular/core';
 import { CircuitDto, TimerDto } from '@shared/models';
 import { StorageService, ModalService } from '@core/services';
-import { CountdownComponent, CountdownEvent } from 'ngx-countdown';
-import {
-    BehaviorSubject,
-    Observable,
-    merge,
-    Subject,
-    from,
-    forkJoin,
-} from 'rxjs';
-import {
-    take,
-    map,
-    startWith,
-    tap,
-    switchMap,
-    filter,
-    distinctUntilChanged,
-} from 'rxjs/operators';
+import { BehaviorSubject, Observable, from } from 'rxjs';
+import { map, startWith, tap, switchMap, filter } from 'rxjs/operators';
 import { CircuitTimerComponent } from '../circuit-timer/circuit-timer.component';
 import { Select } from '@ngxs/store';
 import { CircuitState } from '@core/state';
-import { Emitter, Emittable } from '@ngxs-labs/emitter';
 
 @Component({
     selector: 'app-circuit-view',
@@ -72,6 +56,8 @@ export class CircuitViewComponent implements OnInit {
      */
     @ViewChildren('childTimer') timers: QueryList<CircuitTimerComponent>;
 
+    @ViewChildren('scrollTo') scrollList: QueryList<any>;
+
     @Output()
     public editCircuit: EventEmitter<CircuitDto> = new EventEmitter<
         CircuitDto
@@ -106,6 +92,14 @@ export class CircuitViewComponent implements OnInit {
             // Tell matching playIndex timer to play
             const timerArray = this.timers.toArray();
             timerArray[curPlayIndex].play();
+
+            // Scroll to active timer
+            const els = this.scrollList.toArray();
+            els[curPlayIndex].el.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest',
+            });
         }
     }
 
