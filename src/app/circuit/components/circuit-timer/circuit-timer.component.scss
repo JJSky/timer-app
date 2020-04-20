@@ -11,5 +11,11 @@
             font-weight: bold;
             font-size: 30px;
         }
+        .name {
+            max-width: calc(100% - 115px);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
 }

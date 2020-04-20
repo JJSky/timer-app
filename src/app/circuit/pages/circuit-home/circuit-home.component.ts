@@ -7,12 +7,12 @@ import {
     QueryList,
 } from '@angular/core';
 import { Select } from '@ngxs/store';
-import { Observable, BehaviorSubject, of } from 'rxjs';
+import { Observable, BehaviorSubject, of, Subscription } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
 import { ModalService, StorageService } from '@core/services';
 import { CircuitState } from '@core/state';
 import { CircuitDto } from '@shared/models';
-import { IonSlides } from '@ionic/angular';
+import { IonSlides, Platform } from '@ionic/angular';
 import { Emitter, Emittable } from '@ngxs-labs/emitter';
 import { CircuitViewComponent } from 'app/circuit/components';
 
@@ -47,14 +47,29 @@ export class CircuitHomeComponent implements OnInit {
         this._slides = elRef;
     }
 
+    /**
+     * Access to circuit components.
+     */
     @ViewChildren('circuitEl') public circuitEls: QueryList<
         CircuitViewComponent
     >;
 
+    private subscription: Subscription;
+
     constructor(
         private _modalService: ModalService,
-        private _storage: StorageService
+        private _storage: StorageService,
+        private _platform: Platform
     ) {}
+
+    ionViewDidEnter(): void {
+        this.subscription = this._platform.backButton.subscribe(() => {
+            navigator['app'].exitApp();
+        });
+    }
+    ionViewWillLeave(): void {
+        this.subscription.unsubscribe();
+    }
 
     ngOnInit(): void {
         // Only automatically open modal if no circuits exist already
