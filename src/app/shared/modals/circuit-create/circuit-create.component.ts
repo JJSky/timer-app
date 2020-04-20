@@ -21,7 +21,7 @@ import {
     IonItemSliding,
 } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
-import { TimerDto, CircuitDto } from '@shared/models';
+import { TimerDto, CircuitDto } from '../../models';
 const uuidv1 = require('uuid/v1');
 
 const maxMinutes = 59;
@@ -30,7 +30,7 @@ const maxSeconds = 59;
     selector: 'app-circuit-create',
     templateUrl: './circuit-create.component.html',
     styleUrls: ['./circuit-create.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CircuitCreateComponent implements OnInit {
     /**
@@ -120,7 +120,9 @@ export class CircuitCreateComponent implements OnInit {
     }
 
     // ~~~~~~~~~~~~~~~~~~ Form array stuff starts here ~~~~~~~~~~~~~~~~~~
-    /** Get reference to timers FormArray from circuitForm. */
+    /**
+     * Get reference to timers FormArray from circuitForm.
+     */
     public get timersFormArray(): FormArray {
         return this.circuitForm.get('timers') as FormArray;
     }
@@ -136,14 +138,15 @@ export class CircuitCreateComponent implements OnInit {
      * Returns new formgroup for a timer.
      */
     public createTimer(timer?: TimerDto): FormGroup {
+        console.log(timer);
         return this._fb.group({
             name: timer ? timer.name : '',
             minutes: [
-                timer ? timer.minutes : 0,
+                timer ? timer.minutes : '',
                 [Validators.min(0), Validators.max(maxMinutes)],
             ],
             seconds: [
-                timer ? timer.seconds : 0,
+                timer ? timer.seconds : '',
                 [
                     Validators.min(timer ? timer.minutes : 0),
                     Validators.max(maxSeconds),
@@ -154,6 +157,19 @@ export class CircuitCreateComponent implements OnInit {
                 [Validators.required, Validators.min(1)],
             ],
         });
+    }
+
+    /**
+     * Keep timer totalTime in sync with min/sec.
+     * @param index Index of timer in timerFormArray.
+     */
+    public updateTimerTotalTime(index: number): void {
+        const secondsInMinute = 60;
+        const timerGroup = this.timersFormArray.controls[index];
+        const min =
+            parseInt(timerGroup.get('minutes').value, 10) * secondsInMinute;
+        const sec = parseInt(timerGroup.get('seconds').value, 10);
+        timerGroup.get('totalTime').patchValue(min + sec);
     }
 
     /**

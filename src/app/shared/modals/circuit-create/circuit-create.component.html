@@ -1,16 +1,21 @@
 <ion-header>
-    <ion-toolbar color="primary">
-        <ion-buttons slot="secondary">
-            <ion-buttons slot="start">
-                <ion-button (click)="dismiss()">
-                    Cancel
-                    <ion-ripple-effect></ion-ripple-effect>
-                </ion-button>
-            </ion-buttons>
+    <ion-toolbar mode="ios" color="primary">
+        <ion-buttons slot="start">
+            <ion-button (click)="dismiss()">
+                <ion-icon slot="icon-only" name="close"></ion-icon>
+                <!-- Cancel -->
+                <ion-ripple-effect></ion-ripple-effect>
+            </ion-button>
         </ion-buttons>
         <ion-title>
             New Circuit
         </ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="formRef.ngSubmit.emit()">
+                <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+                <ion-ripple-effect></ion-ripple-effect>
+            </ion-button>
+        </ion-buttons>
     </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -50,23 +55,47 @@
                     disabled="false"
                 >
                     <ion-item-sliding
+                        #slideable
+                        class="timer"
                         *ngFor="
                             let timer of timersFormArray.controls;
                             let i = index
                         "
                         [formGroupName]="i"
-                        #slideable
                     >
                         <ion-item>
                             <ion-input
+                                class="name"
                                 placeholder="Timer Name"
                                 formControlName="name"
                             ></ion-input>
-                            <ion-input formControlName="minutes">
-                                <span slot="end" class="sufix">m</span>
+                            <ion-input
+                                type="number"
+                                class="minutes"
+                                placeholder="Minutes"
+                                formControlName="minutes"
+                                (ionChange)="updateTimerTotalTime(i)"
+                            >
+                                <span
+                                    slot="end"
+                                    class="sufix"
+                                    *ngIf="timer.get('minutes').value !== ''"
+                                    >m</span
+                                >
                             </ion-input>
-                            <ion-input formControlName="seconds">
-                                <span slot="end" class="sufix">s</span>
+                            <ion-input
+                                type="number"
+                                class="seconds"
+                                placeholder="Seconds"
+                                formControlName="seconds"
+                                (ionChange)="updateTimerTotalTime(i)"
+                            >
+                                <span
+                                    slot="end"
+                                    class="sufix"
+                                    *ngIf="timer.get('seconds').value !== ''"
+                                    >s</span
+                                >
                             </ion-input>
 
                             <!-- <ion-item
@@ -92,14 +121,18 @@
                             <ion-reorder></ion-reorder>
                         </ion-item>
                         <ion-item-options side="end">
-                            <button
-                                ion-button
-                                type="button"
-                                color="warning"
+                            <ion-item-option
+                                color="primary"
+                                (click)="addTimer(timer.value)"
+                            >
+                                <ion-icon name="copy"></ion-icon>
+                            </ion-item-option>
+                            <ion-item-option
+                                color="danger"
                                 (click)="deleteTimer(i)"
                             >
-                                Delete
-                            </button>
+                                <ion-icon name="trash"></ion-icon>
+                            </ion-item-option>
                         </ion-item-options>
 
                         <div class="validation-errors">
@@ -144,14 +177,8 @@
     </form>
 </ion-content>
 
-<ion-footer>
-    <ion-toolbar>
-        <ion-button
-            type="button"
-            expand="block"
-            (click)="formRef.ngSubmit.emit()"
-        >
-            Submit
-        </ion-button>
-    </ion-toolbar>
+<ion-footer class="ion-no-border">
+    <ion-button type="button" expand="block" (click)="formRef.ngSubmit.emit()">
+        Submit
+    </ion-button>
 </ion-footer>
