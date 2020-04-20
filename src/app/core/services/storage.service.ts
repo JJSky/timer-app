@@ -69,7 +69,7 @@ export class StorageService {
         const existingCircuits = await this._getItem(this._circuitKey);
         const index = existingCircuits.findIndex((c: CircuitDto) => c.id === circuitId);
 
-        if (index) {
+        if (index !== -1) {
             // Remove circuit from local storage
             console.log('delete circuit', circuitId);
             existingCircuits.splice(index);

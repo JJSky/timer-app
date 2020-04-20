@@ -21,7 +21,6 @@ import { CircuitState } from '@core/state';
     selector: 'app-circuit-view',
     templateUrl: './circuit-view.component.html',
     styleUrls: ['./circuit-view.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CircuitViewComponent implements OnInit {
     /**
@@ -59,17 +58,13 @@ export class CircuitViewComponent implements OnInit {
     @ViewChildren('scrollTo') scrollList: QueryList<any>;
 
     @Output()
-    public editCircuit: EventEmitter<CircuitDto> = new EventEmitter<
-        CircuitDto
-    >();
+    public editCircuit: EventEmitter<CircuitDto> = new EventEmitter<CircuitDto>();
     @Output()
     public deleteCircuit: EventEmitter<any> = new EventEmitter<any>();
 
     public numTimers$: BehaviorSubject<number> = new BehaviorSubject(0);
     public playIndex$: BehaviorSubject<number> = new BehaviorSubject(0);
-    public circuitComplete$: BehaviorSubject<boolean> = new BehaviorSubject(
-        false
-    );
+    public circuitComplete$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     constructor(
         private readonly _storageService: StorageService,
@@ -133,11 +128,11 @@ export class CircuitViewComponent implements OnInit {
     }
 
     /** Delete circuit. */
-    public delete(): void {
+    public async delete(): Promise<void> {
         from(this._modalService.confirmCircuitDeleteModal(this.circuit$.value))
             .pipe(
                 switchMap((alert) => alert.onDidDismiss()),
-                filter((res) => res.data && res.data === true),
+                filter((res) => !!res.data && typeof res.data === 'string'),
                 tap((_) => this.deleteCircuit.emit()),
                 switchMap((res) => this._storageService.deleteCircuit(res.data))
             )
@@ -145,9 +140,10 @@ export class CircuitViewComponent implements OnInit {
 
         // const alert = await this._modalService.confirmCircuitDeleteModal(this.circuit$.value);
         // const res = await alert.onDidDismiss();
-        // if (!!res.data && res.data === true) {
+        // console.log('res: ', res);
+        // if (!!res.data && typeof res.data === 'string') {
         //     console.log('delete circuit', res.data);
-        //     this._storageService.deleteCircuit(this.circuit$.value);
+        //     this._storageService.deleteCircuit(this.circuit$.value.id);
         //     this.deleteCircuit.emit();
         // }
     }
@@ -159,7 +155,6 @@ export class CircuitViewComponent implements OnInit {
         const nextIndex = this.playIndex$.value + 1;
         this.playIndex$.next(nextIndex);
 
-        // TODO: For some reason this play is activating on the stopped timer and not the next one
         this.play();
     }
 
