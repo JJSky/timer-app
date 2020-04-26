@@ -71,8 +71,9 @@ export class CircuitCreateComponent implements OnInit {
 
         // If editing, populate timers
         if (!!this.circuit) {
-            for (const timer of this.circuit.timers) {
+            for (const [i, timer] of this.circuit.timers.entries()) {
                 this.addTimer(timer);
+                this.updateTimerTotalTime(i);
             }
         } else {
             this.addTimer();
