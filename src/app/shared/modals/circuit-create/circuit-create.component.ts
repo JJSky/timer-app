@@ -146,8 +146,17 @@ export class CircuitCreateComponent implements OnInit {
         const milisecondsInSecond = 1000;
 
         const timerGroup = this.timersFormArray.controls[index];
-        const min = parseInt(timerGroup.get('minutes').value, 10) * milisecondsInMinute;
-        const sec = parseInt(timerGroup.get('seconds').value, 10) * milisecondsInSecond;
+
+        let min = 0;
+        let sec = 0;
+        // Check if time values exist
+        // If they do, get the value and parse it into miliseconds
+        if (!!timerGroup.get('minutes').value) {
+            min = parseInt(timerGroup.get('minutes').value, 10) * milisecondsInMinute;
+        }
+        if (!!timerGroup.get('seconds').value) {
+            sec = parseInt(timerGroup.get('seconds').value, 10) * milisecondsInSecond;
+        }
 
         timerGroup.get('totalTime').patchValue(min + sec);
     }
