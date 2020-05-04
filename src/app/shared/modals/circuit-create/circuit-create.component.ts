@@ -88,8 +88,9 @@ export class CircuitCreateComponent implements OnInit {
     public getMax(event: CustomEvent): void {
         const maxLength = 2;
         if (event.detail.value.length > maxLength) {
-            const val = event.target.value.toString().slice(0, -1);
-            event.target.value = parseInt(val, 10);
+            const target = event.target as HTMLIonInputElement;
+            const val = target.value.toString().slice(0, -1);
+            target.value = val;
         }
     }
 
@@ -140,11 +141,8 @@ export class CircuitCreateComponent implements OnInit {
     public createTimer(timer?: TimerDto): FormGroup {
         return this._fb.group({
             name: timer ? timer.name : '',
-            minutes: [timer ? timer.minutes : '', [Validators.min(0), Validators.max(maxMinutes)]],
-            seconds: [
-                timer ? timer.seconds : '',
-                [Validators.min(timer ? timer.minutes : 0), Validators.max(maxSeconds)],
-            ],
+            minutes: [timer ? timer.minutes : '', [Validators.min(0)]],
+            seconds: [timer ? timer.seconds : '', [Validators.min(0)]],
             totalTime: [timer ? timer.totalTime : 0, [Validators.required, Validators.min(1)]],
         });
     }
