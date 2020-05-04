@@ -16,7 +16,7 @@ Bugs
 Setup environment
 
 ```sh
-$ cd timer-app
+$ cd circuit-timers
 $ npm install
 ```
 

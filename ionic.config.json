@@ -1,7 +1,7 @@
 {
-  "name": "timer-app",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
+    "name": "Circuit Timers",
+    "integrations": {
+        "capacitor": {}
+    },
+    "type": "angular"
 }

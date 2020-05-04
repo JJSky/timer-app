@@ -8,6 +8,7 @@ import {
     EventEmitter,
     ChangeDetectionStrategy,
     ElementRef,
+    ViewChild,
 } from '@angular/core';
 import { CircuitDto, TimerDto } from '@shared/models';
 import { StorageService, ModalService } from '@core/services';
@@ -61,7 +62,6 @@ export class CircuitViewComponent implements OnInit {
      * Access to the countdown timer elements on the page.
      */
     @ViewChildren('childTimer') timers: QueryList<CircuitTimerComponent>;
-
     @ViewChildren('scrollTo') scrollList: QueryList<any>;
 
     @Output()
@@ -89,6 +89,7 @@ export class CircuitViewComponent implements OnInit {
         if (curPlayIndex >= numTimers) {
             console.log('complete circuit', curPlayIndex, numTimers);
             this.circuitComplete$.next(true);
+            // play confetti here
         } else {
             // Tell matching playIndex timer to play
             const timerArray = this.timers.toArray();

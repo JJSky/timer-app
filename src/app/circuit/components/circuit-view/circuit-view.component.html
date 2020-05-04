@@ -4,11 +4,7 @@
     <ion-list #timerList>
         <ion-item
             #scrollTo
-            *ngFor="
-                let timer of timers$ | async;
-                let i = index;
-                trackBy: timerTrackBy
-            "
+            *ngFor="let timer of timers$ | async; let i = index; trackBy: timerTrackBy"
         >
             <app-circuit-timer
                 #childTimer
@@ -29,3 +25,7 @@
         (edit)="editCircuit.emit(circuit)"
     ></app-circuit-controls>
 </ng-container>
+<div [class.pyro]="circuitComplete$ | async">
+    <div class="before"></div>
+    <div class="after"></div>
+</div>
