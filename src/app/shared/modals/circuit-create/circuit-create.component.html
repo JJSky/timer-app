@@ -69,7 +69,13 @@
                                 formControlName="minutes"
                                 (ionChange)="updateTimerTotalTime(i); getMax($event)"
                             >
-                                <span slot="end" class="sufix" *ngIf="!!timer.get('minutes').value"
+                                <span
+                                    slot="end"
+                                    class="sufix"
+                                    *ngIf="
+                                        !!timer.get('minutes').value ||
+                                        timer.get('minutes').value === 0
+                                    "
                                     >m</span
                                 >
                             </ion-input>
@@ -81,7 +87,13 @@
                                 formControlName="seconds"
                                 (ionChange)="updateTimerTotalTime(i); getMax($event)"
                             >
-                                <span slot="end" class="sufix" *ngIf="!!timer.get('seconds').value"
+                                <span
+                                    slot="end"
+                                    class="sufix"
+                                    *ngIf="
+                                        !!timer.get('seconds').value ||
+                                        timer.get('seconds').value === 0
+                                    "
                                     >s</span
                                 >
                             </ion-input>
