@@ -19,11 +19,7 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <form
-        [formGroup]="circuitForm"
-        (ngSubmit)="submitCircuit(circuitForm)"
-        #formRef="ngForm"
-    >
+    <form [formGroup]="circuitForm" (ngSubmit)="submitCircuit(circuitForm)" #formRef="ngForm">
         <ion-item>
             <ion-label position="Fixed">Circuit Name</ion-label>
             <ion-input
@@ -33,17 +29,12 @@
             ></ion-input>
         </ion-item>
         <div class="validation-errors">
-            <ng-container
-                *ngFor="let validation of validationMessages.circuitName"
-            >
+            <ng-container *ngFor="let validation of validationMessages.circuitName">
                 <div
                     class="error-message"
-                    *ngIf="
-                        isValid(circuitForm.get('circuitName'), validation.type)
-                    "
+                    *ngIf="isValid(circuitForm.get('circuitName'), validation.type)"
                 >
-                    <ion-icon name="information-circle"></ion-icon
-                    >{{ validation.message }}
+                    <ion-icon name="information-circle"></ion-icon>{{ validation.message }}
                 </div>
             </ng-container>
         </div>
@@ -59,7 +50,8 @@
                         class="timer"
                         *ngFor="
                             let timer of timersFormArray.controls;
-                            let i = index
+                            let i = index;
+                            trackBy: timerTrackBy
                         "
                         [formGroupName]="i"
                     >
@@ -71,29 +63,25 @@
                             ></ion-input>
                             <ion-input
                                 type="number"
+                                maxlength="2"
                                 class="minutes"
                                 placeholder="Minutes"
                                 formControlName="minutes"
-                                (ionChange)="updateTimerTotalTime(i)"
+                                (ionChange)="updateTimerTotalTime(i); getMax($event)"
                             >
-                                <span
-                                    slot="end"
-                                    class="sufix"
-                                    *ngIf="timer.get('minutes').value !== ''"
+                                <span slot="end" class="sufix" *ngIf="!!timer.get('minutes').value"
                                     >m</span
                                 >
                             </ion-input>
                             <ion-input
                                 type="number"
+                                maxlength="2"
                                 class="seconds"
                                 placeholder="Seconds"
                                 formControlName="seconds"
-                                (ionChange)="updateTimerTotalTime(i)"
+                                (ionChange)="updateTimerTotalTime(i); getMax($event)"
                             >
-                                <span
-                                    slot="end"
-                                    class="sufix"
-                                    *ngIf="timer.get('seconds').value !== ''"
+                                <span slot="end" class="sufix" *ngIf="!!timer.get('seconds').value"
                                     >s</span
                                 >
                             </ion-input>
@@ -121,40 +109,26 @@
                             <ion-reorder></ion-reorder>
                         </ion-item>
                         <ion-item-options side="end">
-                            <ion-item-option
-                                color="primary"
-                                (click)="addTimer(timer.value)"
-                            >
+                            <ion-item-option color="primary" (click)="addTimer(timer.value)">
                                 <ion-icon name="copy"></ion-icon>
                             </ion-item-option>
-                            <ion-item-option
-                                color="danger"
-                                (click)="deleteTimer(i)"
-                            >
+                            <ion-item-option color="danger" (click)="deleteTimer(i)">
                                 <ion-icon name="trash"></ion-icon>
                             </ion-item-option>
                         </ion-item-options>
 
                         <div class="validation-errors">
-                            <ng-container
-                                *ngFor="
-                                    let validation of validationMessages.timer
-                                "
-                            >
+                            <ng-container *ngFor="let validation of validationMessages.timer">
                                 <div
                                     class="error-message"
                                     *ngIf="
                                         isValid(
-                                            timersFormArray.controls[i].get(
-                                                'totalTime'
-                                            ),
+                                            timersFormArray.controls[i].get('totalTime'),
                                             validation.type
                                         )
                                     "
                                 >
-                                    <ion-icon
-                                        name="information-circle"
-                                    ></ion-icon
+                                    <ion-icon name="information-circle"></ion-icon
                                     >{{ validation.message }}
                                 </div>
                             </ng-container>
@@ -162,12 +136,7 @@
                     </ion-item-sliding>
                 </ion-reorder-group>
             </ion-list>
-            <ion-button
-                type="button"
-                expand="block"
-                (click)="addTimer()"
-                class="add-timer"
-            >
+            <ion-button type="button" expand="block" (click)="addTimer()" class="add-timer">
                 Add Timer
             </ion-button>
         </ion-card>

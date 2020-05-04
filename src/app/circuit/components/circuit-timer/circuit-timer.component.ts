@@ -14,6 +14,7 @@ import { CountdownComponent, CountdownEvent } from 'ngx-countdown';
 import { CircuitState } from '@core/state';
 import { Select } from '@ngxs/store';
 import { Emitter, Emittable } from '@ngxs-labs/emitter';
+import { SoundService } from '@core/services';
 
 @Component({
     selector: 'app-circuit-timer',
@@ -64,7 +65,7 @@ export class CircuitTimerComponent implements OnInit {
 
     private _unsub: Subject<void> = new Subject();
 
-    constructor() {}
+    constructor(private readonly _soundService: SoundService) {}
 
     ngOnInit(): void {}
 
@@ -92,7 +93,7 @@ export class CircuitTimerComponent implements OnInit {
             // If nextTimer has run and isPlaying isn't false yet
             // play this timer anyways (HACKY)
             if (this.timer.left === this.timerData.totalTime) {
-                console.log('pause timer, just kidding keep going');
+                // console.log('pause timer, just kidding keep going');
                 this.timer.resume();
 
                 // Update circuit status
@@ -142,13 +143,13 @@ export class CircuitTimerComponent implements OnInit {
      * Output and handle events output by timers.
      */
     public handleTimer(e: CountdownEvent): void {
-        console.log('timer event: ', e);
+        // console.log('timer event: ', e);
 
         // Emit if timer completes
         if (e.action === 'done') {
-            console.log('done action');
             this._setPlaying.emit(false);
             this.timerComplete.emit();
+            this._soundService.playCompleteSound();
         }
     }
 }

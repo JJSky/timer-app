@@ -83,6 +83,17 @@ export class CircuitCreateComponent implements OnInit {
     }
 
     /**
+     * Limit number of characters entered into input fields.
+     */
+    public getMax(event: CustomEvent): void {
+        const maxLength = 2;
+        if (event.detail.value.length > maxLength) {
+            const val = event.target.value.toString().slice(0, -1);
+            event.target.value = parseInt(val, 10);
+        }
+    }
+
+    /**
      * Animates first item in IonItemSlide to demonstrate that
      * there are hidden actions available from swiping on the item.
      */
@@ -188,6 +199,14 @@ export class CircuitCreateComponent implements OnInit {
         }
         this.timersFormArray.setControl(to, temp);
         event.detail.complete();
+    }
+
+    public timerTrackBy(index: number, item: FormGroup): FormGroup {
+        console.log(item);
+        if (!item) {
+            return null;
+        }
+        return item;
     }
     // ~~~~~~~~~~~~~~~~~~ Form array stuff ends here ~~~~~~~~~~~~~~~~~~
 

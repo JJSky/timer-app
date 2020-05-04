@@ -30,14 +30,14 @@ export class ModalService {
                 {
                     text: 'Cancel',
                     role: 'cancel',
-                    handler: () => {
+                    handler: (): boolean => {
                         alert.dismiss();
                         return false;
                     },
                 },
                 {
                     text: 'Delete',
-                    handler: () => {
+                    handler: (): boolean => {
                         alert.dismiss(circuit.id);
                         return false;
                     },

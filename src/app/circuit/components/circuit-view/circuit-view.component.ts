@@ -16,6 +16,7 @@ import { map, startWith, tap, switchMap, filter } from 'rxjs/operators';
 import { CircuitTimerComponent } from '../circuit-timer/circuit-timer.component';
 import { Select } from '@ngxs/store';
 import { CircuitState } from '@core/state';
+import { Emitter, Emittable } from '@ngxs-labs/emitter';
 
 @Component({
     selector: 'app-circuit-view',
@@ -28,6 +29,12 @@ export class CircuitViewComponent implements OnInit {
      */
     @Select(CircuitState.isPlaying)
     public isPlaying$: Observable<boolean>;
+
+    /**
+     * Set circuit status isPlaying in state.
+     */
+    @Emitter(CircuitState.setPlaying)
+    private _setPlaying: Emittable<boolean>;
 
     /**
      * Circuit data from home page.
@@ -77,7 +84,6 @@ export class CircuitViewComponent implements OnInit {
     public play(): void {
         const curPlayIndex = this.playIndex$.value;
         const numTimers = this.numTimers$.value;
-        console.log('try to play timer', curPlayIndex);
 
         // Check if circuit is complete
         if (curPlayIndex >= numTimers) {
@@ -101,15 +107,24 @@ export class CircuitViewComponent implements OnInit {
     public pauseTimer(): void {
         const curPlayIndex = this.playIndex$.value;
         const timerArray = this.timers.toArray();
-        timerArray[curPlayIndex].pause();
+
+        // Don't try to pause if circuit is complete
+        if (!this.circuitComplete$.value) {
+            timerArray[curPlayIndex].pause();
+        }
     }
 
     /** Skip to next timer in circuit. */
     public skip(): void {
         console.log('skip current timer');
         const curTimers = this.timers.toArray();
-        curTimers[this.playIndex$.value].stop();
-        this.nextTimer();
+        this._setPlaying.emit(false);
+
+        // Don't skip if circuit is already complete
+        if (!this.circuitComplete$.value) {
+            curTimers[this.playIndex$.value].stop();
+            this.nextTimer();
+        }
     }
 
     /** Reset timers to initial state. */
@@ -134,15 +149,16 @@ export class CircuitViewComponent implements OnInit {
                 switchMap((alert) => alert.onDidDismiss()),
                 filter((res) => !!res.data && typeof res.data === 'string'),
                 tap((_) => this.deleteCircuit.emit()),
-                switchMap((res) => this._storageService.deleteCircuit(res.data))
+                switchMap((res) => {
+                    this.deleteCircuit.emit();
+                    return this._storageService.deleteCircuit(res.data);
+                })
             )
             .subscribe();
 
         // const alert = await this._modalService.confirmCircuitDeleteModal(this.circuit$.value);
         // const res = await alert.onDidDismiss();
-        // console.log('res: ', res);
         // if (!!res.data && typeof res.data === 'string') {
-        //     console.log('delete circuit', res.data);
         //     this._storageService.deleteCircuit(this.circuit$.value.id);
         //     this.deleteCircuit.emit();
         // }

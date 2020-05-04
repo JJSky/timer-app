@@ -93,7 +93,7 @@ export class CircuitState {
     ): void {
         setState((state: CircuitStateModel) => {
             const index = state.circuits.findIndex((c) => c.id === payload);
-            state.circuits.splice(index);
+            state.circuits.splice(index, 1);
             return state;
         });
     }

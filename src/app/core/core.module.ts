@@ -4,6 +4,7 @@ import { StorageService } from '@core/services';
 import { NgxsModule } from '@ngxs/store';
 import { environment } from 'environments/environment';
 import { states } from '@core/state';
+import { services } from '@core/services';
 import { NgxsEmitPluginModule } from '@ngxs-labs/emitter';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 
@@ -12,14 +13,14 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
     imports: [
         CommonModule,
         NgxsModule.forRoot(states, {
-            developmentMode: !environment.production
+            developmentMode: !environment.production,
         }),
         NgxsEmitPluginModule.forRoot(),
         NgxsReduxDevtoolsPluginModule.forRoot({
-            disabled: environment.production
-        })
+            disabled: environment.production,
+        }),
     ],
     entryComponents: [],
-    providers: [StorageService, Storage]
+    providers: [StorageService, Storage],
 })
 export class CoreModule {}

@@ -1,14 +1,7 @@
-import {
-    Component,
-    OnInit,
-    ViewChild,
-    ElementRef,
-    ViewChildren,
-    QueryList,
-} from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { Select } from '@ngxs/store';
-import { Observable, BehaviorSubject, of, Subscription } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of, Subscription, Subject } from 'rxjs';
+import { take, tap, takeUntil } from 'rxjs/operators';
 import { ModalService, StorageService } from '@core/services';
 import { CircuitState } from '@core/state';
 import { CircuitDto } from '@shared/models';
@@ -50,10 +43,9 @@ export class CircuitHomeComponent implements OnInit {
     /**
      * Access to circuit components.
      */
-    @ViewChildren('circuitEl') public circuitEls: QueryList<
-        CircuitViewComponent
-    >;
+    @ViewChildren('circuitEl') public circuitEls: QueryList<CircuitViewComponent>;
 
+    private _unsub: Subject<void> = new Subject();
     private subscription: Subscription;
 
     constructor(
@@ -73,11 +65,16 @@ export class CircuitHomeComponent implements OnInit {
 
     ngOnInit(): void {
         // Only automatically open modal if no circuits exist already
-        this.circuits$.pipe(take(1)).subscribe((circuits) => {
+        this.circuits$.pipe(takeUntil(this._unsub)).subscribe((circuits) => {
             if (!circuits) {
+                console.log('try to create circuit on init');
                 this.createCircuit();
             }
         });
+    }
+    ngOnDestroy(): void {
+        this._unsub.next();
+        this._unsub.complete();
     }
 
     public circuitTrackBy(index: number, item: CircuitDto): string {
