@@ -7,7 +7,7 @@ import { CircuitState } from '@core/state';
 import { CircuitDto } from '@shared/models';
 import { IonSlides, Platform } from '@ionic/angular';
 import { Emitter, Emittable } from '@ngxs-labs/emitter';
-import { CircuitViewComponent } from 'app/circuit/components';
+import { CircuitViewComponent } from '../../components';
 
 @Component({
     selector: 'app-circuit-home',

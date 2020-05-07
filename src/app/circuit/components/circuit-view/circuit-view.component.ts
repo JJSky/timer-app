@@ -10,14 +10,15 @@ import {
     ElementRef,
     ViewChild,
 } from '@angular/core';
-import { CircuitDto, TimerDto } from '@shared/models';
-import { StorageService, ModalService } from '@core/services';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 import { map, startWith, tap, switchMap, filter } from 'rxjs/operators';
-import { CircuitTimerComponent } from '../circuit-timer/circuit-timer.component';
 import { Select } from '@ngxs/store';
-import { CircuitState } from '@core/state';
 import { Emitter, Emittable } from '@ngxs-labs/emitter';
+
+import { CircuitState } from '@core/state';
+import { StorageService, ModalService } from '@core/services';
+import { CircuitDto, TimerDto } from '@shared/models';
+import { CircuitTimerComponent } from '../circuit-timer/circuit-timer.component';
 
 @Component({
     selector: 'app-circuit-view',

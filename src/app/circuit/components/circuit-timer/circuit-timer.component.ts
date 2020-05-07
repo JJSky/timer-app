@@ -7,14 +7,13 @@ import {
     EventEmitter,
     ChangeDetectionStrategy,
 } from '@angular/core';
-import { TimerDto } from '@shared/models';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
-import { take, tap, filter, takeUntil } from 'rxjs/operators';
 import { CountdownComponent, CountdownEvent } from 'ngx-countdown';
-import { CircuitState } from '@core/state';
-import { Select } from '@ngxs/store';
 import { Emitter, Emittable } from '@ngxs-labs/emitter';
+
+import { CircuitState } from '@core/state';
 import { SoundService } from '@core/services';
+import { TimerDto } from '@shared/models';
 
 @Component({
     selector: 'app-circuit-timer',

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Plugins, PluginRegistry } from '@capacitor/core';
 import { Emitter, Emittable } from '@ngxs-labs/emitter';
-import { CircuitState } from '@core/state';
+import { CircuitState } from '../state';
 import { CircuitDto } from '@shared/models';
 
 const { Storage }: PluginRegistry = Plugins;

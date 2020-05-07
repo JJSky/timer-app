@@ -10,7 +10,7 @@ import { CircuitHomeComponent } from './pages';
 import { components } from './components';
 
 @NgModule({
-    declarations: [CircuitHomeComponent, components],
+    declarations: [CircuitHomeComponent, ...components],
     imports: [
         CommonModule,
         IonicModule,

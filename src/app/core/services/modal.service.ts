@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
-import { CircuitCreateComponent } from '../../shared/modals/circuit-create/circuit-create.component';
+import { CircuitCreateComponent } from '@shared/modals';
 import { CircuitDto } from '@shared/models';
 
 @Injectable({

@@ -13,14 +13,13 @@ import {
     FormArray,
     FormControl,
     ValidationErrors,
+    AbstractControl,
 } from '@angular/forms';
 import { PickerController, ModalController, IonItemSliding } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
 import { TimerDto, CircuitDto } from '../../models';
 const uuidv1 = require('uuid/v1');
 
-const maxMinutes = 59;
-const maxSeconds = 59;
 @Component({
     selector: 'app-circuit-create',
     templateUrl: './circuit-create.component.html',
@@ -56,11 +55,7 @@ export class CircuitCreateComponent implements OnInit {
         timer: [{ type: 'min', message: 'An amount of time is required.' }],
     };
 
-    constructor(
-        private _fb: FormBuilder,
-        private _pickerCtrl: PickerController,
-        private _modalCtrl: ModalController
-    ) {}
+    constructor(private _fb: FormBuilder, private _modalCtrl: ModalController) {}
 
     ngOnInit(): void {
         // Initialize circuit form
@@ -116,7 +111,7 @@ export class CircuitCreateComponent implements OnInit {
      * @param field Form field to validate.
      * @param type Type of validation to perform on field.
      */
-    public isValid(field: FormControl, type: string): boolean {
+    public isValid(field: AbstractControl, type: string): boolean {
         return field.hasError(type) && (field.dirty || field.touched);
     }
 
