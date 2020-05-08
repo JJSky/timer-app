@@ -22,12 +22,10 @@
         #slides
         (ionSlideDidChange)="slideChange($event)"
         pager="true"
-        [options]="slideOpts"
+        [options]="slideOpts$ | async"
         *ngIf="(circuits$ | async)?.length > 0; else noCircuits"
     >
-        <ion-slide
-            *ngFor="let circuit of circuits$ | async; trackBy: circuitTrackBy"
-        >
+        <ion-slide *ngFor="let circuit of circuits$ | async; trackBy: circuitTrackBy">
             <app-circuit-view
                 #circuitEl
                 [circuit]="circuit"

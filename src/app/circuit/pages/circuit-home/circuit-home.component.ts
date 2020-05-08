@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { Select } from '@ngxs/store';
 import { Observable, BehaviorSubject, of, Subscription, Subject } from 'rxjs';
-import { take, tap, takeUntil } from 'rxjs/operators';
+import { take, tap, takeUntil, switchMap } from 'rxjs/operators';
 import { ModalService, StorageService } from '@core/services';
 import { CircuitState } from '@core/state';
 import { CircuitDto } from '@shared/models';
@@ -21,16 +21,8 @@ export class CircuitHomeComponent implements OnInit {
     @Select(CircuitState.circuits)
     public circuits$: Observable<CircuitDto[]>;
 
-    /**
-     * Options for ion-slider.
-     */
-    public slideOpts: any = {
-        initialSlide: 0,
-        speed: 400,
-        renderBullet: (index, className): string => {
-            return '<span class="' + className + '">' + (index + 1) + '</span>';
-        },
-    };
+    @Select(CircuitState.isPlaying)
+    public isPlaying$: Observable<boolean>;
 
     /**
      * Access to IonSlides component.
@@ -47,6 +39,23 @@ export class CircuitHomeComponent implements OnInit {
 
     private _unsub: Subject<void> = new Subject();
     private subscription: Subscription;
+
+    /**
+     * Options for ion-slider.
+     */
+    public slideOpts$: Observable<any> = this.isPlaying$.pipe(
+        takeUntil(this._unsub),
+        switchMap((playing) => {
+            return of({
+                initialSlide: 0,
+                speed: 400,
+                renderBullet: (index, className): string => {
+                    return '<span class="' + className + '">' + (index + 1) + '</span>';
+                },
+                onlyExternal: playing,
+            });
+        })
+    );
 
     constructor(
         private _modalService: ModalService,

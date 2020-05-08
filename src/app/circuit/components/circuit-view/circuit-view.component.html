@@ -1,4 +1,8 @@
 <div class="spacer"></div>
+<div *ngIf="circuitComplete$ | async" class="pyro">
+    <div class="before"></div>
+    <div class="after"></div>
+</div>
 <ng-container *ngIf="circuit$ | async as circuit">
     <h1>{{ circuit.name }}</h1>
     <ion-list #timerList>
@@ -25,7 +29,3 @@
         (edit)="editCircuit.emit(circuit)"
     ></app-circuit-controls>
 </ng-container>
-<div [class.pyro]="circuitComplete$ | async">
-    <div class="before"></div>
-    <div class="after"></div>
-</div>
