@@ -1,7 +1,9 @@
+<div class="spacer"></div>
+<ion-progress-bar [value]="percentComplete"></ion-progress-bar>
 <div class="controls-wrapper">
     <ion-fab slot="fixed" vertical="center" horizontal="center">
         <ion-fab-button size="small" class="secondary">
-            <ion-icon name="more"></ion-icon>
+            <ion-icon name="ellipsis-vertical"></ion-icon>
         </ion-fab-button>
         <ion-fab-list side="top">
             <ion-fab-button class="secondary" (click)="reset.emit()">
@@ -20,21 +22,15 @@
     </ion-fab>
     <div class="middle">
         <ion-fab-button color="primary" class="play" (click)="playOrReset()">
-            <ion-icon
-                name="play"
-                *ngIf="!circuitComplete && !isPlaying"
-            ></ion-icon>
-            <ion-icon
-                name="pause"
-                *ngIf="!circuitComplete && isPlaying"
-            ></ion-icon>
+            <ion-icon name="play" *ngIf="!circuitComplete && !isPlaying"></ion-icon>
+            <ion-icon name="pause" *ngIf="!circuitComplete && isPlaying"></ion-icon>
             <ion-icon name="refresh" *ngIf="circuitComplete"></ion-icon>
             <ion-ripple-effect></ion-ripple-effect>
         </ion-fab-button>
     </div>
     <ion-fab slot="fixed" horizontal="center">
         <ion-fab-button size="small" class="secondary" (click)="skip.emit()">
-            <ion-icon name="skip-forward"></ion-icon>
+            <ion-icon name="play-skip-forward"></ion-icon>
             <ion-ripple-effect></ion-ripple-effect>
         </ion-fab-button>
     </ion-fab>

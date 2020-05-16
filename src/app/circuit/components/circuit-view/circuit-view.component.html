@@ -22,6 +22,7 @@
     <app-circuit-controls
         [circuitComplete]="circuitComplete$ | async"
         [isPlaying]="isPlaying$ | async"
+        [percentComplete]="percentComplete$ | async"
         (play)="play()"
         (skip)="skip()"
         (delete)="delete()"

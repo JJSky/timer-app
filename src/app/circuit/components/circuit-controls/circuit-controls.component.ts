@@ -21,6 +21,8 @@ export class CircuitControlsComponent implements OnInit {
     public isPlaying: boolean = false;
     @Input()
     public circuitComplete: boolean;
+    @Input()
+    public percentComplete: number = 0;
     @Output()
     public play: EventEmitter<any> = new EventEmitter<any>();
     @Output()

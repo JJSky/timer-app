@@ -10,7 +10,7 @@ import {
     ElementRef,
     ViewChild,
 } from '@angular/core';
-import { BehaviorSubject, Observable, from } from 'rxjs';
+import { BehaviorSubject, Observable, from, combineLatest } from 'rxjs';
 import { map, startWith, tap, switchMap, filter } from 'rxjs/operators';
 import { Select } from '@ngxs/store';
 import { Emitter, Emittable } from '@ngxs-labs/emitter';
@@ -73,6 +73,11 @@ export class CircuitViewComponent implements OnInit {
     public numTimers$: BehaviorSubject<number> = new BehaviorSubject(0);
     public playIndex$: BehaviorSubject<number> = new BehaviorSubject(0);
     public circuitComplete$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
+    public percentComplete$: Observable<number> = combineLatest(
+        this.numTimers$,
+        this.playIndex$
+    ).pipe(map(([totalNum, curIndex]) => curIndex / totalNum));
 
     constructor(
         private readonly _storageService: StorageService,
