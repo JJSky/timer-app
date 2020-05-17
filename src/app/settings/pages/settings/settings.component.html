@@ -16,33 +16,46 @@
                 button
                 lines="none"
                 detail="false"
+                color="background"
                 (click)="fireworksToggle.checked = !fireworksToggle.checked"
             >
                 <ion-label>Fireworks</ion-label>
-                <ion-toggle formControlName="fireworks" #fireworksToggle></ion-toggle>
+                <ion-toggle
+                    formControlName="fireworks"
+                    color="secondary"
+                    #fireworksToggle
+                ></ion-toggle>
             </ion-item>
             <ion-item
                 button
                 lines="none"
                 detail="false"
+                color="background"
                 (click)="darkModeToggle.checked = !darkModeToggle.checked"
             >
                 <ion-label>Dark Mode</ion-label>
-                <ion-toggle formControlName="darkMode" #darkModeToggle></ion-toggle>
+                <ion-toggle
+                    formControlName="darkMode"
+                    color="secondary"
+                    (ionChange)="onDarkModeToggle($event)"
+                    #darkModeToggle
+                ></ion-toggle>
             </ion-item>
             <ion-item
                 button
                 lines="none"
                 detail="false"
+                color="background"
                 (click)="fullscreenCircuitsToggle.checked = !fullscreenCircuitsToggle.checked"
             >
                 <ion-label>Fullscreen Circuits</ion-label>
                 <ion-toggle
                     formControlName="fullscreenCircuits"
+                    color="secondary"
                     #fullscreenCircuitsToggle
                 ></ion-toggle>
             </ion-item>
-            <ion-item button lines="none" detail="false">
+            <ion-item button lines="none" detail="false" color="background">
                 <ion-label>Volume</ion-label>
                 <ion-range
                     min="0"
@@ -51,6 +64,7 @@
                     snaps="true"
                     ticks="false"
                     formControlName="volume"
+                    color="secondary"
                     [value]="settingsForm.controls.volume.value"
                 ></ion-range>
             </ion-item>

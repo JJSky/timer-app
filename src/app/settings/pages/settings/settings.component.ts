@@ -35,7 +35,7 @@ export class SettingsComponent implements OnInit {
             // Initialize settings form
             this.settingsForm = this._fb.group({
                 fireworks: [existingSettings.fireworks],
-                darkMode: { value: existingSettings.darkMode, disabled: true },
+                darkMode: [existingSettings.darkMode],
                 fullscreenCircuits: {
                     value: existingSettings.fullscreenCircuits,
                     disabled: true,
@@ -60,4 +60,15 @@ export class SettingsComponent implements OnInit {
         this._unsub.next();
         this._unsub.complete();
     }
+
+    public onDarkModeToggle(event: any): void {
+        document.body.classList.toggle('dark', event.detail.checked);
+
+        // const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+        // prefersDark.addListener((mediaQuery) => this.toggleDarkTheme(mediaQuery.matches));
+    }
+
+    // private toggleDarkTheme(shouldAdd): void {
+    //     document.body.classList.toggle('dark', shouldAdd);
+    // }
 }

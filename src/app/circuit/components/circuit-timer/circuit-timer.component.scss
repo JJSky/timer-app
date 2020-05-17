@@ -5,9 +5,10 @@
         display: flex;
         justify-content: space-between;
         transition: font-size 0.2s;
+        color: var(--ion-color-text);
 
         &.active {
-            color: var(--ion-color-primary);
+            color: var(--ion-color-secondary);
             font-weight: bold;
             font-size: 30px;
         }

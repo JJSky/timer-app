@@ -1,3 +1,17 @@
-ion-toggle {
-    pointer-events: none;
+ion-content {
+    --background: transparent;
+    transition: background 0.2s;
+    background: var(--ion-color-background);
+
+    ion-list {
+        background: transparent;
+
+        ion-label {
+            color: var(--ion-color-text);
+        }
+
+        ion-toggle {
+            pointer-events: none;
+        }
+    }
 }

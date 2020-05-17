@@ -114,6 +114,8 @@ export class StorageService {
         console.log('settings: ', savedSettings);
         if (savedSettings !== null) {
             console.log('restore settings', savedSettings);
+
+            document.body.classList.toggle('dark', savedSettings.darkMode);
             this._setSettings.emit(await this._getItem(this._settingsKey));
         } else {
             console.log('no saved settings');

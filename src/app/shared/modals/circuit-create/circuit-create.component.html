@@ -97,27 +97,6 @@
                                     >s</span
                                 >
                             </ion-input>
-
-                            <!-- <ion-item
-                                button="true"
-                                lines="none"
-                                (click)="chooseTime(timer)"
-                            >
-                                <div class="time">
-                                    <span class="minute"
-                                        >{{
-                                            timer.get('minutes').value
-                                                | number: '2.0-0'
-                                        }}m</span
-                                    >
-                                    <span class="second">
-                                        {{
-                                            timer.get('seconds').value
-                                                | number: '2.0-0'
-                                        }}s</span
-                                    >
-                                </div>
-                            </ion-item> -->
                             <ion-reorder></ion-reorder>
                         </ion-item>
                         <ion-item-options side="end">
@@ -148,7 +127,13 @@
                     </ion-item-sliding>
                 </ion-reorder-group>
             </ion-list>
-            <ion-button type="button" expand="block" (click)="addTimer()" class="add-timer">
+            <ion-button
+                type="button"
+                color="secondary"
+                expand="block"
+                (click)="addTimer()"
+                class="add-timer"
+            >
                 Add Timer
             </ion-button>
         </ion-card>

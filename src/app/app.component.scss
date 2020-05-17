@@ -17,8 +17,15 @@
 
 ion-menu {
     ion-content {
+        --background: var(--ion-color-background);
+
         ion-list {
+            background: var(--ion-color-background);
+
             ion-item {
+                ion-label {
+                    color: var(--ion-color-text);
+                }
                 ion-icon {
                     margin-right: 16px;
                 }

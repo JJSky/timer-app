@@ -1,9 +1,10 @@
 ion-slides {
     height: 100%;
     position: relative;
+    background: var(--ion-color-background);
 
-    --bullet-background: var(--ion-color-tertiary);
-    --bullet-background-active: var(--ion-color-primary);
+    --bullet-background: var(--ion-color-dark);
+    --bullet-background-active: var(--ion-color-secondary);
 
     ::ng-deep {
         .swiper-pagination {

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Platform, NavController } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { StorageService } from './core/services';
@@ -32,11 +32,11 @@ export class AppComponent {
         private _splashScreen: SplashScreen,
         private _statusBar: StatusBar,
         private _storageService: StorageService,
-        private _navCtrl: NavController,
         private _router: Router
     ) {
         this.initializeApp();
 
+        // Set active page
         this._router.events.subscribe((event: RouterEvent) => {
             this.selectedPath = event.url;
         });
@@ -48,13 +48,10 @@ export class AppComponent {
             this._splashScreen.hide();
         });
 
-        // Restore timers
+        // Restore circuits
         this._storageService.restoreCircuits();
-        this._storageService.restoreSettings();
-    }
 
-    public goToSettings(): void {
-        console.log('navigate to settings plz');
-        this._navCtrl.navigateRoot('/settings');
+        // Restore settings
+        this._storageService.restoreSettings();
     }
 }

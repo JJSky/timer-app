@@ -12,10 +12,11 @@
                         button
                         lines="none"
                         routerDirection="root"
+                        color="background"
                         [routerLink]="p.url"
                         [class.active-item]="selectedPath === p.url"
                     >
-                        <ion-icon [name]="p.icon"></ion-icon>
+                        <ion-icon color="secondary" [name]="p.icon"></ion-icon>
                         <ion-label>{{ p.title }}</ion-label>
                     </ion-item>
                 </ion-menu-toggle>
