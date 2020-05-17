@@ -17,7 +17,7 @@ export class AppComponent {
     public menuPages: MenuItem[] = [
         new MenuItem({
             title: 'Public Circuits',
-            url: '/home',
+            url: '/public',
             icon: 'cloud',
         }),
         new MenuItem({

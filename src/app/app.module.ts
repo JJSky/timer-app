@@ -38,6 +38,11 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
                     import('./settings/settings.module').then((m) => m.SettingsModule),
             },
             {
+                path: 'public',
+                loadChildren: (): any =>
+                    import('./public/public.module').then((m) => m.PublicModule),
+            },
+            {
                 path: '**',
                 redirectTo: 'home',
             },
