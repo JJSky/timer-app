@@ -29,19 +29,25 @@ import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
         RouterModule.forRoot([
             {
                 path: 'home',
-                loadChildren: './circuit/circuit.module#CircuitModule'
+                loadChildren: (): any =>
+                    import('./circuit/circuit.module').then((m) => m.CircuitModule),
+            },
+            {
+                path: 'settings',
+                loadChildren: (): any =>
+                    import('./settings/settings.module').then((m) => m.SettingsModule),
             },
             {
                 path: '**',
-                redirectTo: '/home'
-            }
-        ])
+                redirectTo: 'home',
+            },
+        ]),
     ],
     providers: [
         StatusBar,
         SplashScreen,
-        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -11,13 +11,13 @@ import {
     ViewChild,
 } from '@angular/core';
 import { BehaviorSubject, Observable, from, combineLatest } from 'rxjs';
-import { map, startWith, tap, switchMap, filter } from 'rxjs/operators';
+import { map, startWith, tap, switchMap, filter, pluck } from 'rxjs/operators';
 import { Select } from '@ngxs/store';
 import { Emitter, Emittable } from '@ngxs-labs/emitter';
 
-import { CircuitState } from '@core/state';
+import { CircuitState, SettingsState } from '@core/state';
 import { StorageService, ModalService } from '@core/services';
-import { CircuitDto, TimerDto } from '@shared/models';
+import { CircuitDto, TimerDto, Settings } from '@shared/models';
 import { CircuitTimerComponent } from '../circuit-timer/circuit-timer.component';
 
 @Component({
@@ -26,6 +26,12 @@ import { CircuitTimerComponent } from '../circuit-timer/circuit-timer.component'
     styleUrls: ['./circuit-view.component.scss'],
 })
 export class CircuitViewComponent implements OnInit {
+    /**
+     * Settings from state.
+     */
+    @Select(SettingsState.settings)
+    public settings$: Observable<Settings>;
+
     /**
      * Circuit playing state.
      */
@@ -78,6 +84,11 @@ export class CircuitViewComponent implements OnInit {
         this.numTimers$,
         this.playIndex$
     ).pipe(map(([totalNum, curIndex]) => curIndex / totalNum));
+
+    public playFireWorks$: Observable<boolean> = combineLatest(
+        this.circuitComplete$,
+        this.settings$.pipe(map((s) => s.fireworks))
+    ).pipe(map(([complete, fireworks]) => complete && fireworks));
 
     constructor(
         private readonly _storageService: StorageService,

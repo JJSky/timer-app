@@ -5,7 +5,7 @@ import { take, tap, takeUntil, switchMap } from 'rxjs/operators';
 import { ModalService, StorageService } from '@core/services';
 import { CircuitState } from '@core/state';
 import { CircuitDto } from '@shared/models';
-import { IonSlides, Platform } from '@ionic/angular';
+import { IonSlides, Platform, MenuController } from '@ionic/angular';
 import { Emitter, Emittable } from '@ngxs-labs/emitter';
 import { CircuitViewComponent } from '../../components';
 
@@ -60,7 +60,8 @@ export class CircuitHomeComponent implements OnInit {
     constructor(
         private _modalService: ModalService,
         private _storage: StorageService,
-        private _platform: Platform
+        private _platform: Platform,
+        private _menu: MenuController
     ) {}
 
     ionViewDidEnter(): void {
@@ -84,6 +85,10 @@ export class CircuitHomeComponent implements OnInit {
     ngOnDestroy(): void {
         this._unsub.next();
         this._unsub.complete();
+    }
+
+    public openMenu(): void {
+        this._menu.open('side-menu');
     }
 
     public circuitTrackBy(index: number, item: CircuitDto): string {

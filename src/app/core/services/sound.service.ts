@@ -1,12 +1,18 @@
 import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { Select } from '@ngxs/store';
+import { SettingsState } from '../state';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { Settings } from '@shared/models';
+import { pluck, take } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SoundService {
-    public volume: number = 1;
+    @Select(SettingsState.settings)
+    public settings$: Observable<Settings>;
+
+    public volume$: Observable<number> = this.settings$.pipe(pluck('volume'));
     private _audio: HTMLAudioElement = new Audio();
     private _isPlaying: boolean = false;
 
@@ -20,7 +26,9 @@ export class SoundService {
         }
 
         // Set volume
-        this._audio.volume = this.volume;
+        this.volume$.pipe(take(1)).subscribe((v) => {
+            this._audio.volume = v;
+        });
 
         this._audio.src = '/assets/alarm_clock.mp3';
         this._audio.load();

@@ -14,3 +14,15 @@
     animation-duration: 0.5s;
     animation-timing-function: ease-out;
 }
+
+ion-menu {
+    ion-content {
+        ion-list {
+            ion-item {
+                ion-icon {
+                    margin-right: 16px;
+                }
+            }
+        }
+    }
+}

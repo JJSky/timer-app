@@ -3,30 +3,24 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from '../shared/shared.module';
-import { CountdownModule } from 'ngx-countdown';
-
-import { CircuitHomeComponent } from './pages';
-import { components } from './components';
+import { SettingsComponent } from './pages';
 
 @NgModule({
-    declarations: [CircuitHomeComponent, ...components],
+    declarations: [SettingsComponent],
     imports: [
         CommonModule,
         IonicModule,
         ReactiveFormsModule,
-        SharedModule,
-        CountdownModule,
         RouterModule.forChild([
             {
                 path: '',
-                component: CircuitHomeComponent,
+                component: SettingsComponent,
             },
             {
                 path: '**',
-                redirectTo: 'home',
+                redirectTo: 'settings',
             },
         ]),
     ],
 })
-export class CircuitModule {}
+export class SettingsModule {}

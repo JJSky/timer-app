@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Plugins, PluginRegistry } from '@capacitor/core';
 import { Emitter, Emittable } from '@ngxs-labs/emitter';
-import { CircuitState } from '../state';
-import { CircuitDto } from '@shared/models';
+import { CircuitState, SettingsState } from '../state';
+import { CircuitDto, Settings } from '@shared/models';
 
 const { Storage }: PluginRegistry = Plugins;
 
@@ -23,7 +23,12 @@ export class StorageService {
     @Emitter(CircuitState.deleteCircuit)
     private _deleteCircuit: Emittable<string>;
 
+    // Emit to these to work with settings
+    @Emitter(SettingsState.setSettings)
+    private _setSettings: Emittable<Settings>;
+
     private _circuitKey: string = 'circuitKey';
+    private _settingsKey: string = 'settingsKey';
 
     constructor() {}
 
@@ -88,6 +93,30 @@ export class StorageService {
             this._restoreCircuits.emit(await this._getItem(this._circuitKey));
         } else {
             console.log('no circuits to restore');
+        }
+    }
+
+    /**
+     * Update settings in local storage and settings state.
+     * @param settings Settings to update in local storage & state.
+     */
+    public async updateSettings(settings: Settings): Promise<void> {
+        console.log('saving updated settings to local storage', settings);
+        await this._storeItem(this._settingsKey, settings);
+
+        console.log('save updated settings to state');
+        this._setSettings.emit(settings);
+    }
+
+    /** Get settings from local storage and overwrite settings state. */
+    public async restoreSettings(): Promise<void> {
+        const savedSettings = await this._getItem(this._settingsKey);
+        console.log('settings: ', savedSettings);
+        if (savedSettings !== null) {
+            console.log('restore settings', savedSettings);
+            this._setSettings.emit(await this._getItem(this._settingsKey));
+        } else {
+            console.log('no saved settings');
         }
     }
 

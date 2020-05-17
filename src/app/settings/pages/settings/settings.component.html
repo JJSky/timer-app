@@ -1,0 +1,54 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="home"></ion-back-button>
+        </ion-buttons>
+        <ion-title>
+            Settings
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <form [formGroup]="settingsForm">
+        <ion-list>
+            <ion-item
+                button
+                lines="none"
+                (click)="fireworksToggle.checked = !fireworksToggle.checked"
+            >
+                <ion-label>Fireworks</ion-label>
+                <ion-toggle formControlName="fireworks" #fireworksToggle></ion-toggle>
+            </ion-item>
+            <ion-item
+                button
+                lines="none"
+                (click)="darkModeToggle.checked = !darkModeToggle.checked"
+            >
+                <ion-label>Dark Mode</ion-label>
+                <ion-toggle formControlName="darkMode" #darkModeToggle></ion-toggle>
+            </ion-item>
+            <ion-item
+                button
+                lines="none"
+                (click)="fullscreenCircuitsToggle.checked = !fullscreenCircuitsToggle.checked"
+            >
+                <ion-label>Fullscreen Circuits</ion-label>
+                <ion-toggle
+                    formControlName="fullscreenCircuits"
+                    #fullscreenCircuitsToggle
+                ></ion-toggle>
+            </ion-item>
+            <ion-item button lines="none">
+                <ion-label>Volume</ion-label>
+                <ion-range
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    formControlName="volume"
+                    [value]="settingsForm.controls.volume.value"
+                ></ion-range>
+            </ion-item>
+        </ion-list>
+    </form>
+</ion-content>
