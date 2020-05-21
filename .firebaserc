@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "circuit-timers": {
+      "hosting": {
+        "app": [
+          "circuit-timers"
+        ]
+      }
+    }
+  }
+}

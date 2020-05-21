@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Select } from '@ngxs/store';
-import { SettingsState } from '../state';
+import { SettingsState } from '../../state';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Settings } from '@shared/models';
 import { pluck, take } from 'rxjs/operators';

@@ -1,9 +1,16 @@
-import { ModalService } from './modal.service';
-import { StorageService } from './storage.service';
-import { SoundService } from './sound.service';
+import { CircuitService } from './circuit/circuit.service';
+import { ModalService } from './modal/modal.service';
+import { SoundService } from './sound/sound.service';
+import { StorageService } from './storage/storage.service';
 
-export const services = [ModalService, StorageService, SoundService];
+export const services = [
+    CircuitService,
+    ModalService,
+    SoundService,
+    StorageService,
+];
 
-export { ModalService } from './modal.service';
-export { StorageService } from './storage.service';
-export { SoundService } from './sound.service';
+export { CircuitService } from './circuit/circuit.service';
+export { ModalService } from './modal/modal.service';
+export { SoundService } from './sound/sound.service';
+export { StorageService } from './storage/storage.service';

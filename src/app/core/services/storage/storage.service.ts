@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Plugins, PluginRegistry } from '@capacitor/core';
 import { Emitter, Emittable } from '@ngxs-labs/emitter';
-import { CircuitState, SettingsState } from '../state';
+import { CircuitState, SettingsState } from '../../state';
 import { CircuitDto, Settings } from '@shared/models';
 
 const { Storage }: PluginRegistry = Plugins;
@@ -40,7 +40,9 @@ export class StorageService {
         console.log('saving circuit to local storage', circuit);
         const existingCircuits = await this._getItem(this._circuitKey);
         if (existingCircuits !== null && existingCircuits.length > 0) {
-            console.log('circuits already exist, append circuit to local storage');
+            console.log(
+                'circuits already exist, append circuit to local storage'
+            );
             existingCircuits.push(circuit);
             await this._storeItem(this._circuitKey, existingCircuits);
         } else {
@@ -58,7 +60,9 @@ export class StorageService {
     public async updateCircuit(circuit: CircuitDto): Promise<void> {
         console.log('saving edited circuit to local storage', circuit);
         const existingCircuits = await this._getItem(this._circuitKey);
-        const indexToUpdate = existingCircuits.findIndex((c: CircuitDto) => c.id === circuit.id);
+        const indexToUpdate = existingCircuits.findIndex(
+            (c: CircuitDto) => c.id === circuit.id
+        );
         existingCircuits[indexToUpdate] = circuit;
         await this._storeItem(this._circuitKey, existingCircuits);
 
@@ -72,7 +76,9 @@ export class StorageService {
      */
     public async deleteCircuit(circuitId: string): Promise<void> {
         const existingCircuits = await this._getItem(this._circuitKey);
-        const index = existingCircuits.findIndex((c: CircuitDto) => c.id === circuitId);
+        const index = existingCircuits.findIndex(
+            (c: CircuitDto) => c.id === circuitId
+        );
 
         if (index !== -1) {
             // Remove circuit from local storage
